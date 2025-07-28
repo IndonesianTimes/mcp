@@ -51,4 +51,24 @@ async function indexArticle(data) {
   }
 }
 
-module.exports = { indexArticle };
+/**
+ * Mencari artikel berdasarkan query.
+ * @param {object} params
+ */
+async function searchArticles(params) {
+  if (typeof params !== 'object' || params === null) {
+    throw new Error('params harus objek');
+  }
+  const { query } = params;
+  if (typeof query !== 'string') {
+    throw new Error('query harus string');
+  }
+  const index = await getKnowledgeIndex();
+  try {
+    return await index.search(query);
+  } catch (err) {
+    throw new Error(`Gagal melakukan pencarian: ${err.message}`);
+  }
+}
+
+module.exports = { indexArticle, searchArticles };
