@@ -1,5 +1,6 @@
+require('dotenv').config();
 const express = require('express');
-const { indexArticle, searchArticles } = require('./search');
+const { indexArticle, searchArticles, checkMeiliConnection } = require('./search');
 const { addNumbers, multiplyNumbers } = require('./dummyTools');
 const fs = require('fs');
 const path = require('path');
@@ -30,8 +31,18 @@ app.use((req, res, next) => {
 
 // Log each incoming request after body parsing
 app.use((req, res, next) => {
-  logger.info(`${req.method} ${req.originalUrl} payload: ${JSON.stringify(req.body)}`);
+  logger.info(`${req.method} ${req.originalUrl}`);
   next();
+});
+
+app.get('/healthz', async (req, res) => {
+  try {
+    await checkMeiliConnection();
+    res.json({ status: 'ok' });
+  } catch (err) {
+    logger.error(`Health check failed: ${err.message}`);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Bearer token authentication
