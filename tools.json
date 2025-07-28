@@ -8,6 +8,16 @@
     "name": "indexArticle",
     "description": "Index article into knowledge base",
     "params": ["article"]
+  },
+  {
+    "name": "addNumbers",
+    "description": "Add two numbers",
+    "params": ["a", "b"]
+  },
+  {
+    "name": "multiplyNumbers",
+    "description": "Multiply two numbers",
+    "params": ["a", "b"]
   }
 ]
 
