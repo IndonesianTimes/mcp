@@ -13,6 +13,14 @@ const jwt = require('jsonwebtoken');
 const logger = require('./logger');
 const { askAI } = require('./ai');
 
+function sendSuccess(res, data) {
+  res.json({ success: true, data, error: null });
+}
+
+function sendError(res, code, message) {
+  res.status(code).json({ success: false, data: null, error: message });
+}
+
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
 const app = express();
@@ -46,10 +54,10 @@ app.use(express.static('public'));
 app.get('/healthz', async (req, res) => {
   try {
     await checkMeiliConnection();
-    res.json({ status: 'ok' });
+    sendSuccess(res, { status: 'ok' });
   } catch (err) {
     logger.error(`Health check failed: ${err.message}`);
-    res.status(500).json({ error: err.message });
+    sendError(res, 500, err.message);
   }
 });
 
@@ -65,7 +73,7 @@ app.get('/status', async (req, res) => {
   const meili = (await isMeiliConnected()) ? 'connected' : 'disconnected';
   const llm = process.env.LLM_BACKEND === 'openai' ? 'openai' : 'local';
   const uptimeMs = Date.now() - (Date.now() - process.uptime() * 1000);
-  res.json({
+  sendSuccess(res, {
     server: 'ok',
     meilisearch: meili,
     llm,
@@ -78,12 +86,12 @@ app.use((req, res, next) => {
   const authHeader = req.headers && req.headers['authorization'];
   if (!authHeader || typeof authHeader !== 'string') {
     logger.error('Missing Authorization header');
-    return res.status(401).json({ error: 'Unauthorized' });
+    return sendError(res, 401, 'Unauthorized');
   }
   const parts = authHeader.split(' ');
   if (parts.length !== 2 || parts[0] !== 'Bearer') {
     logger.error('Malformed Authorization header');
-    return res.status(401).json({ error: 'Unauthorized' });
+    return sendError(res, 401, 'Unauthorized');
   }
   const token = parts[1];
   try {
@@ -91,18 +99,18 @@ app.use((req, res, next) => {
     next();
   } catch (err) {
     logger.error(`JWT error: ${err.message}`);
-    res.status(401).json({ error: 'Invalid token' });
+    sendError(res, 401, 'Invalid token');
   }
 });
 
 app.post('/data', (req, res) => {
-  res.json({ received: req.body });
+  sendSuccess(res, { received: req.body });
 });
 
 app.post('/articles', async (req, res, next) => {
   try {
     const result = await indexArticle(req.body);
-    res.json({ indexed: result });
+    sendSuccess(res, { indexed: result });
   } catch (err) {
     next(err);
   }
@@ -111,11 +119,11 @@ app.post('/articles', async (req, res, next) => {
 app.get('/search', async (req, res, next) => {
   const query = typeof req.query.query === 'string' ? req.query.query : req.query.q;
   if (typeof query !== 'string' || !query.trim()) {
-    return res.status(400).json({ error: 'parameter query wajib diisi' });
+    return sendError(res, 400, 'parameter query wajib diisi');
   }
   try {
     const results = await searchArticles(query);
-    res.json({ results });
+    sendSuccess(res, results);
   } catch (err) {
     next(err);
   }
@@ -124,7 +132,7 @@ app.get('/search', async (req, res, next) => {
 app.post('/tools/call', async (req, res, next) => {
   const { tool_name, params } = req.body || {};
   if (typeof tool_name !== 'string' || typeof params !== 'object' || params === null || Array.isArray(params)) {
-    return res.status(400).json({ error: 'tool_name harus string dan params harus objek' });
+    return sendError(res, 400, 'tool_name harus string dan params harus objek');
   }
 
   const map = {
@@ -136,12 +144,12 @@ app.post('/tools/call', async (req, res, next) => {
 
   const fn = map[tool_name];
   if (!fn) {
-    return res.status(404).json({ error: 'Tool tidak ditemukan' });
+    return sendError(res, 404, 'Tool tidak ditemukan');
   }
 
   try {
     const result = await fn(params);
-    res.json({ result });
+    sendSuccess(res, result);
   } catch (err) {
     next(err);
   }
@@ -152,10 +160,10 @@ app.get('/tools/list', (req, res) => {
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
       if (err.code === 'ENOENT') {
-        return res.json({ tools: [] });
+        return sendSuccess(res, []);
       }
       logger.error(`Failed to read tools.json: ${err.message}`);
-      return res.status(500).json({ error: 'Failed to read tools data' });
+      return sendError(res, 500, 'Failed to read tools data');
     }
 
     let tools;
@@ -166,30 +174,30 @@ app.get('/tools/list', (req, res) => {
       }
     } catch (e) {
       logger.error(`Invalid tools.json: ${e.message}`);
-      return res.status(500).json({ error: 'Failed to parse tools data' });
+      return sendError(res, 500, 'Failed to parse tools data');
     }
 
-    res.json({ tools });
+    sendSuccess(res, tools);
   });
 });
 
 app.post('/ask', async (req, res) => {
   if (!req.body || typeof req.body.question !== 'string' || !req.body.question.trim()) {
-    return res.status(400).json({ error: 'Invalid request body' });
+    return sendError(res, 400, 'Invalid request body');
   }
   try {
     const result = await askAI(req.body.question);
-    res.status(200).json(result);
+    sendSuccess(res, result);
   } catch (err) {
     logger.error(`askAI failed: ${err.message}`);
-    res.status(500).json({ error: 'AI processing failed' });
+    sendError(res, 500, 'AI processing failed');
   }
 });
 
 // Error handling middleware for invalid JSON
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && 'body' in err) {
-    return res.status(400).json({ error: 'Invalid JSON' });
+    return sendError(res, 400, 'Invalid JSON');
   }
   next(err);
 });
@@ -198,7 +206,7 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   logger.error(err);
   const status = err.status || 500;
-  res.status(status).json({ error: err.message || 'Internal Server Error' });
+  sendError(res, status, err.message || 'Internal Server Error');
 });
 
 const PORT = process.env.PORT || 3000;

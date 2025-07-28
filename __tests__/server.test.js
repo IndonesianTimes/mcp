@@ -10,7 +10,8 @@ describe('API endpoints', () => {
       .get('/tools/list')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body.tools)).toBe(true);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
   });
 
   test('/articles rejects empty id', async () => {
@@ -27,6 +28,7 @@ describe('API endpoints', () => {
         author: 'me'
       });
     expect(res.status).toBeGreaterThanOrEqual(400);
+    expect(res.body.success).toBe(false);
     expect(res.body).toHaveProperty('error');
   });
 
@@ -36,7 +38,8 @@ describe('API endpoints', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ tool_name: 'addNumbers', params: { a: 2, b: 3 } });
     expect(res.status).toBe(200);
-    expect(res.body.result).toBe(5);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toBe(5);
   });
 
   test('/tools/call with invalid JSON returns error', async () => {
@@ -46,6 +49,7 @@ describe('API endpoints', () => {
       .set('Content-Type', 'application/json')
       .send('{"tool_name": "addNumbers", "params": {a:1, b:2}');
     expect(res.status).toBe(400);
+    expect(res.body.success).toBe(false);
     expect(res.body).toHaveProperty('error');
   });
 
@@ -60,6 +64,7 @@ describe('API endpoints', () => {
         .get('/tools/list')
         .set('Authorization', `Bearer ${token}`);
       expect(res.status).toBe(500);
+      expect(res.body.success).toBe(false);
       expect(res.body).toHaveProperty('error');
     } finally {
       fs.writeFileSync(file, original, 'utf8');
@@ -80,6 +85,7 @@ describe('API endpoints', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ question: '   ' });
     expect(res.status).toBe(400);
+    expect(res.body.success).toBe(false);
     expect(res.body).toHaveProperty('error');
   });
 
@@ -91,9 +97,10 @@ describe('API endpoints', () => {
   test('/status returns JSON', async () => {
     const res = await request(app).get('/status');
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty('server');
-    expect(res.body).toHaveProperty('meilisearch');
-    expect(res.body).toHaveProperty('llm');
-    expect(res.body).toHaveProperty('uptime');
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveProperty('server');
+    expect(res.body.data).toHaveProperty('meilisearch');
+    expect(res.body.data).toHaveProperty('llm');
+    expect(res.body.data).toHaveProperty('uptime');
   });
 });
