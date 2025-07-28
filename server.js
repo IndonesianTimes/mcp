@@ -1,5 +1,5 @@
 const express = require('express');
-const { indexArticle } = require('./search');
+const { indexArticle, searchArticles } = require('./search');
 const fs = require('fs');
 const path = require('path');
 
@@ -28,6 +28,30 @@ app.post('/articles', async (req, res, next) => {
   try {
     const result = await indexArticle(req.body);
     res.json({ indexed: result });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/tools/call', async (req, res, next) => {
+  const { tool_name, params } = req.body || {};
+  if (typeof tool_name !== 'string' || typeof params !== 'object' || params === null || Array.isArray(params)) {
+    return res.status(400).json({ error: 'tool_name harus string dan params harus objek' });
+  }
+
+  const map = {
+    searchArticles: searchArticles,
+    indexArticle: (p) => indexArticle(p.article ?? p),
+  };
+
+  const fn = map[tool_name];
+  if (!fn) {
+    return res.status(404).json({ error: 'Tool tidak ditemukan' });
+  }
+
+  try {
+    const result = await fn(params);
+    res.json({ result });
   } catch (err) {
     next(err);
   }
