@@ -1,5 +1,6 @@
 const express = require('express');
 const { indexArticle, searchArticles } = require('./search');
+const { addNumbers, multiplyNumbers } = require('./dummyTools');
 const fs = require('fs');
 const path = require('path');
 
@@ -55,6 +56,8 @@ app.post('/tools/call', async (req, res, next) => {
   const map = {
     searchArticles: (p) => searchArticles(p.query ?? p),
     indexArticle: (p) => indexArticle(p.article ?? p),
+    addNumbers,
+    multiplyNumbers,
   };
 
   const fn = map[tool_name];
@@ -98,5 +101,16 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
+// Generic error handler to always return JSON
+app.use((err, req, res, next) => {
+  console.error(err);
+  const status = err.status || 500;
+  res.status(status).json({ error: err.message || 'Internal Server Error' });
+});
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+module.exports = app;
