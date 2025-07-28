@@ -8,31 +8,40 @@ function validateArticle(data) {
     throw new Error('Article harus berupa objek');
   }
   const { id, title, content, tags, category, createdAt, author } = data;
-  if (typeof id !== 'string' && typeof id !== 'number') {
-    throw new Error('id harus string atau number');
+
+  if (typeof id !== 'string') {
+    throw new Error('id harus string');
   }
-  if (typeof title !== 'string') {
-    throw new Error('title harus string');
+  const idTrim = id.trim();
+  if (!idTrim) {
+    throw new Error('id tidak boleh kosong');
   }
-  if (typeof content !== 'string') {
-    throw new Error('content harus string');
+  if (!/^[a-z0-9_-]+$/i.test(idTrim)) {
+    throw new Error('format id tidak valid');
   }
-  if (typeof category !== 'string') {
-    throw new Error('category harus string');
+
+  if (typeof title !== 'string' || !title.trim()) {
+    throw new Error('title harus string dan tidak boleh kosong');
   }
-  if (typeof createdAt !== 'string') {
-    throw new Error('createdAt harus string');
+  if (typeof content !== 'string' || !content.trim()) {
+    throw new Error('content harus string dan tidak boleh kosong');
   }
-  if (typeof author !== 'string') {
-    throw new Error('author harus string');
+  if (typeof category !== 'string' || !category.trim()) {
+    throw new Error('category harus string dan tidak boleh kosong');
+  }
+  if (typeof createdAt !== 'string' || !createdAt.trim()) {
+    throw new Error('createdAt harus string dan tidak boleh kosong');
+  }
+  if (typeof author !== 'string' || !author.trim()) {
+    throw new Error('author harus string dan tidak boleh kosong');
   }
   let parsedTags = [];
   if (Array.isArray(tags)) {
     parsedTags = tags.map((t) => {
-      if (typeof t !== 'string') {
-        throw new Error('tags harus array string');
+      if (typeof t !== 'string' || !t.trim()) {
+        throw new Error('tags harus array string tidak kosong');
       }
-      return t;
+      return t.trim();
     });
   } else if (typeof tags === 'string') {
     parsedTags = tags.split(',').map((t) => t.trim()).filter(Boolean);

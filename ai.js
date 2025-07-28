@@ -1,5 +1,6 @@
 // Utility module for interacting with LLM backends
 const { searchArticles } = require('./search');
+const logger = require('./logger');
 
 const BACKEND = process.env.LLM_BACKEND || 'local';
 
@@ -24,7 +25,7 @@ async function askAI(question) {
     articles = await searchArticles(cleanedQuestion).then(a => a.slice(0, 3));
   } catch (err) {
     // swallow errors but log
-    console.error('searchArticles failed:', err);
+    logger.error(`searchArticles failed: ${err.message}`);
   }
 
   const context = articles

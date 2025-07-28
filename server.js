@@ -123,24 +123,30 @@ app.get('/tools/list', (req, res) => {
   const filePath = path.join(__dirname, 'tools.json');
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
-      // If file does not exist fallback to empty array
       if (err.code === 'ENOENT') {
         return res.json({ tools: [] });
       }
+      logger.error(`Failed to read tools.json: ${err.message}`);
       return res.status(500).json({ error: 'Failed to read tools data' });
     }
+
     let tools;
     try {
-      tools = JSON.parse(data);
+      tools = JSON.parse(data || '[]');
+      if (!Array.isArray(tools)) {
+        throw new Error('tools data is not an array');
+      }
     } catch (e) {
+      logger.error(`Invalid tools.json: ${e.message}`);
       return res.status(500).json({ error: 'Failed to parse tools data' });
     }
+
     res.json({ tools });
   });
 });
 
 app.post('/ask', async (req, res) => {
-  if (!req.body || typeof req.body.question !== 'string') {
+  if (!req.body || typeof req.body.question !== 'string' || !req.body.question.trim()) {
     return res.status(400).json({ error: 'Invalid request body' });
   }
   try {
