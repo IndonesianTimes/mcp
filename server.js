@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const logger = require('./logger');
+const { askAI } = require('./ai');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
@@ -125,6 +126,19 @@ app.get('/tools/list', (req, res) => {
     }
     res.json({ tools });
   });
+});
+
+app.post('/ask', async (req, res) => {
+  if (!req.body || typeof req.body.question !== 'string') {
+    return res.status(400).json({ error: 'Invalid request body' });
+  }
+  try {
+    const result = await askAI(req.body.question);
+    res.status(200).json(result);
+  } catch (err) {
+    logger.error(`askAI failed: ${err.message}`);
+    res.status(500).json({ error: 'AI processing failed' });
+  }
 });
 
 // Error handling middleware for invalid JSON
