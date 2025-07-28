@@ -87,4 +87,18 @@ async function checkMeiliConnection() {
   await client.health();
 }
 
-module.exports = { indexArticle, searchArticles, checkMeiliConnection };
+async function isMeiliConnected() {
+  try {
+    await client.health();
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+module.exports = {
+  indexArticle,
+  searchArticles,
+  checkMeiliConnection,
+  isMeiliConnected,
+};

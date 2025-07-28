@@ -1,6 +1,11 @@
 require('dotenv').config();
 const express = require('express');
-const { indexArticle, searchArticles, checkMeiliConnection } = require('./search');
+const {
+  indexArticle,
+  searchArticles,
+  checkMeiliConnection,
+  isMeiliConnected,
+} = require('./search');
 const { addNumbers, multiplyNumbers } = require('./dummyTools');
 const fs = require('fs');
 const path = require('path');
@@ -43,6 +48,26 @@ app.get('/healthz', async (req, res) => {
     logger.error(`Health check failed: ${err.message}`);
     res.status(500).json({ error: err.message });
   }
+});
+
+function formatUptime(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  return `${days}d ${hours}h ${minutes}m`;
+}
+
+app.get('/status', async (req, res) => {
+  const meili = (await isMeiliConnected()) ? 'connected' : 'disconnected';
+  const llm = process.env.LLM_BACKEND === 'openai' ? 'openai' : 'local';
+  const uptimeMs = Date.now() - (Date.now() - process.uptime() * 1000);
+  res.json({
+    server: 'ok',
+    meilisearch: meili,
+    llm,
+    uptime: formatUptime(uptimeMs),
+  });
 });
 
 // Bearer token authentication
