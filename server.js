@@ -40,6 +40,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Serve static files from the public directory
+app.use(express.static('public'));
+
 app.get('/healthz', async (req, res) => {
   try {
     await checkMeiliConnection();
