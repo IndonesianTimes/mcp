@@ -39,6 +39,19 @@ This project is a minimal Express server used in tests. It now includes a small 
 | GET | `/tools/list` | Bearer | Daftar tool yang tersedia |
 | POST | `/ask` | Bearer | Ajukan pertanyaan ke LLM |
 
+## 📦 Environment Variables
+
+Gunakan variabel berikut untuk mengatur perilaku aplikasi. Contoh nilai diberikan untuk memudahkan konfigurasi.
+
+| Key | Deskripsi | Contoh |
+|-----|-----------|--------|
+| `APP_MODE` | Mode aplikasi | `demo` |
+| `PORT` | Port server | `3000` |
+| `MEILI_HOST` | URL Meilisearch | `http://localhost:7700` |
+| `MEILI_API_KEY` | API Key Meili | `masterKey` |
+| `OPENAI_API_KEY` | API Key GPT | `sk-...` |
+| `JWT_SECRET` | Token untuk auth (optional) | `secret` |
+
 ## Adding a new LLM backend
 
 LLM providers are selected via the `LLM_BACKEND` environment variable. To add a new provider:
