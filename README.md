@@ -1,10 +1,20 @@
 # mcp
 
+[![Docker Ready](https://img.shields.io/badge/docker-ready-blue)]()
+[![Test Passed](https://img.shields.io/badge/tests-passing-brightgreen)]()
+[![AI Ready](https://img.shields.io/badge/LLM-openai-green)]()
+
 [![Docker Ready](https://img.shields.io/badge/docker-ready-blue)](docker-compose.yml)
 [![OpenAI Compatible](https://img.shields.io/badge/openai-compatible-green)](#)
 [![Meilisearch Inside](https://img.shields.io/badge/meilisearch-inside-blueviolet)](#)
 
 This project is a minimal Express server used in tests. It now includes a small AI helper utility and an `/ask` endpoint.
+
+## 🔥 Fitur Utama
+- 🧠 LLM Searchable AI
+- 🔍 Meilisearch-powered
+- 🔐 Validasi ketat dan logging aman
+- 🖥️ Web UI interaktif + CLI
 
 ## Cara jalan cepat
 
