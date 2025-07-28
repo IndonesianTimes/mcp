@@ -50,8 +50,22 @@ async function askAI(question) {
       if (openaiModule.apiKey !== undefined) {
         openaiModule.apiKey = process.env.OPENAI_API_KEY;
       }
-      const client = openaiModule.OpenAI ? new openaiModule.OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : openaiModule;
+      const client = openaiModule.OpenAI
+        ? new openaiModule.OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+        : openaiModule;
       const createFn = client.ChatCompletion?.create || client.chat?.completions?.create;
+      if (typeof createFn !== 'function') {
+        if (!client.chat) {
+          logger.error('OpenAI client.chat missing; SDK structure may have changed');
+        }
+        if (process.env.APP_MODE === 'demo') {
+          return {
+            answer: `Demo response for: ${cleanedQuestion}`,
+            sources: [],
+          };
+        }
+        throw new Error('OpenAI SDK does not provide a chat completion function');
+      }
       const response = await createFn.call(client, {
         model: 'gpt-3.5-turbo',
         messages: [
