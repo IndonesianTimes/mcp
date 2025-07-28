@@ -20,6 +20,14 @@ async function askAI(question) {
     throw new Error('question cannot be empty');
   }
 
+  if (process.env.APP_MODE === 'demo') {
+    logger.info('LLM: demo mode active');
+    return {
+      answer: `Demo response for: ${cleanedQuestion}`,
+      sources: [],
+    };
+  }
+
   let articles = [];
   try {
     articles = await searchArticles(cleanedQuestion).then(a => a.slice(0, 3));
