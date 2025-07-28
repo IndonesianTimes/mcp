@@ -1,0 +1,13 @@
+[
+  {
+    "name": "searchArticles",
+    "description": "Search articles by query",
+    "params": ["query"]
+  },
+  {
+    "name": "indexArticle",
+    "description": "Index article into knowledge base",
+    "params": ["article"]
+  }
+]
+
