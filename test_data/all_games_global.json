@@ -1,0 +1,18 @@
+[
+  {
+    "provider": "dummy",
+    "name": "Game Satu",
+    "rtp": 95,
+    "jam_gacor": "12:00-13:00",
+    "pola_main": ["pola1", "pola2"],
+    "last_update": "2023-01-01"
+  },
+  {
+    "provider": "dummy",
+    "name": "Game Dua",
+    "rtp": 96.5,
+    "jam_gacor": "20:00-21:00",
+    "pola_main": ["pola3", "pola4"],
+    "last_update": "2023-02-02"
+  }
+]
