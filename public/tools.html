@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Tools</title>
+</head>
+<body>
+  <input type="text" id="token" placeholder="Bearer token">
+  <button id="load">Load Tools</button>
+  <pre id="result"></pre>
+<script>
+document.getElementById('load').addEventListener('click', async () => {
+  const token = document.getElementById('token').value;
+  const res = await fetch('/tools/list', {
+    headers: { 'Authorization': token }
+  });
+  let data = {};
+  try { data = await res.json(); } catch (e) {}
+  document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+});
+</script>
+</body>
+</html>

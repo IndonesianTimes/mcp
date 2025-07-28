@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Search</title>
+</head>
+<body>
+  <form id="searchForm">
+    <input type="text" id="token" placeholder="Bearer token"><br>
+    <input type="text" id="query" placeholder="Search query">
+    <button type="submit">Search</button>
+  </form>
+  <pre id="result"></pre>
+<script>
+document.getElementById('searchForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const token = document.getElementById('token').value;
+  const query = document.getElementById('query').value;
+  const url = '/search?query=' + encodeURIComponent(query);
+  const res = await fetch(url, {
+    headers: { 'Authorization': token }
+  });
+  let data = {};
+  try { data = await res.json(); } catch (e) {}
+  document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+});
+</script>
+</body>
+</html>

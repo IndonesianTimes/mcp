@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Ask</title>
+</head>
+<body>
+  <form id="askForm">
+    <input type="text" id="token" placeholder="Bearer token"><br>
+    <input type="text" id="question" placeholder="Your question">
+    <button type="submit">Ask</button>
+  </form>
+  <pre id="result"></pre>
+<script>
+document.getElementById('askForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const token = document.getElementById('token').value;
+  const question = document.getElementById('question').value;
+  const res = await fetch('/ask', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token
+    },
+    body: JSON.stringify({ question })
+  });
+  let data = {};
+  try { data = await res.json(); } catch (e) {}
+  document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+});
+</script>
+</body>
+</html>
