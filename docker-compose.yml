@@ -1,0 +1,21 @@
+version: '3'
+services:
+  mcp:
+    build: .
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      MEILI_HOST: http://meilisearch:7700
+      PORT: ${PORT:-3000}
+      LLM_BACKEND: ${LLM_BACKEND:-local}
+      API_KEY: ${API_KEY:-masterKey}
+    depends_on:
+      - meilisearch
+  meilisearch:
+    image: getmeili/meilisearch:v1.7
+    restart: always
+    ports:
+      - "7700:7700"
+    environment:
+      MEILI_MASTER_KEY: ${API_KEY:-masterKey}

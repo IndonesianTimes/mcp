@@ -3,7 +3,7 @@ const { validateArticle } = require('./validation');
 
 const client = new MeiliSearch({
   host: process.env.MEILI_HOST || 'http://127.0.0.1:7700',
-  apiKey: process.env.MEILI_API_KEY || '',
+  apiKey: process.env.API_KEY || process.env.MEILI_API_KEY || '',
 });
 
 let indexPromise;
@@ -83,4 +83,8 @@ async function searchArticles(query) {
   }
 }
 
-module.exports = { indexArticle, searchArticles };
+async function checkMeiliConnection() {
+  await client.health();
+}
+
+module.exports = { indexArticle, searchArticles, checkMeiliConnection };

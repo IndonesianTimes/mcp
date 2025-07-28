@@ -39,4 +39,9 @@ describe('API endpoints', () => {
       .query({ query: 'random' });
     expect(typeof res.body).toBe('object');
   });
+
+  test('/healthz returns JSON', async () => {
+    const res = await request(app).get('/healthz');
+    expect(typeof res.body).toBe('object');
+  });
 });
