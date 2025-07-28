@@ -3,6 +3,10 @@ const { indexArticle, searchArticles } = require('./search');
 const { addNumbers, multiplyNumbers } = require('./dummyTools');
 const fs = require('fs');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const logger = require('./logger');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
 const app = express();
 const jsonParser = express.json();
@@ -12,12 +16,42 @@ app.use((req, res, next) => {
   try {
     jsonParser(req, res, (err) => {
       if (err) {
+        logger.error(`JSON parse error on ${req.method} ${req.originalUrl}: ${err.message}`);
         return next(err);
       }
       next();
     });
   } catch (err) {
+    logger.error(`JSON parse exception on ${req.method} ${req.originalUrl}: ${err.message}`);
     next(err);
+  }
+});
+
+// Log each incoming request after body parsing
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.originalUrl} payload: ${JSON.stringify(req.body)}`);
+  next();
+});
+
+// Bearer token authentication
+app.use((req, res, next) => {
+  const authHeader = req.headers && req.headers['authorization'];
+  if (!authHeader || typeof authHeader !== 'string') {
+    logger.error('Missing Authorization header');
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const parts = authHeader.split(' ');
+  if (parts.length !== 2 || parts[0] !== 'Bearer') {
+    logger.error('Malformed Authorization header');
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const token = parts[1];
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch (err) {
+    logger.error(`JWT error: ${err.message}`);
+    res.status(401).json({ error: 'Invalid token' });
   }
 });
 
@@ -103,7 +137,7 @@ app.use((err, req, res, next) => {
 
 // Generic error handler to always return JSON
 app.use((err, req, res, next) => {
-  console.error(err);
+  logger.error(err);
   const status = err.status || 500;
   res.status(status).json({ error: err.message || 'Internal Server Error' });
 });
