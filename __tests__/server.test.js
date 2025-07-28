@@ -87,4 +87,13 @@ describe('API endpoints', () => {
     const res = await request(app).get('/healthz');
     expect(typeof res.body).toBe('object');
   });
+
+  test('/status returns JSON', async () => {
+    const res = await request(app).get('/status');
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('server');
+    expect(res.body).toHaveProperty('meilisearch');
+    expect(res.body).toHaveProperty('llm');
+    expect(res.body).toHaveProperty('uptime');
+  });
 });
