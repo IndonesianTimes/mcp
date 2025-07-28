@@ -1,4 +1,5 @@
 const express = require('express');
+const { indexArticle } = require('./search');
 
 const app = express();
 const jsonParser = express.json();
@@ -19,6 +20,15 @@ app.use((req, res, next) => {
 
 app.post('/data', (req, res) => {
   res.json({ received: req.body });
+});
+
+app.post('/articles', async (req, res, next) => {
+  try {
+    const result = await indexArticle(req.body);
+    res.json({ indexed: result });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Error handling middleware for invalid JSON
