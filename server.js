@@ -13,6 +13,20 @@ const jwt = require('jsonwebtoken');
 const logger = require('./logger');
 const { askAI } = require('./ai');
 
+const requiredEnv = [
+  'APP_MODE',
+  'PORT',
+  'MEILI_HOST',
+  'MEILI_API_KEY',
+  'OPENAI_API_KEY',
+  'JWT_SECRET',
+];
+const missingEnv = requiredEnv.filter((v) => !process.env[v]);
+if (missingEnv.length) {
+  logger.error(`Missing environment variables: ${missingEnv.join(', ')}`);
+  process.exit(1);
+}
+
 function sendSuccess(res, data) {
   res.json({ success: true, data, error: null });
 }

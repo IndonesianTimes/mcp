@@ -1,3 +1,10 @@
+process.env.APP_MODE = 'test';
+process.env.PORT = '3000';
+process.env.MEILI_HOST = 'http://localhost:7700';
+process.env.MEILI_API_KEY = 'masterKey';
+process.env.OPENAI_API_KEY = 'test';
+process.env.JWT_SECRET = 'secret';
+
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const app = require('../server');
