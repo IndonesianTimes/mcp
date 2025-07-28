@@ -33,6 +33,19 @@ app.post('/articles', async (req, res, next) => {
   }
 });
 
+app.get('/search', async (req, res, next) => {
+  const query = typeof req.query.query === 'string' ? req.query.query : req.query.q;
+  if (typeof query !== 'string' || !query.trim()) {
+    return res.status(400).json({ error: 'parameter query wajib diisi' });
+  }
+  try {
+    const results = await searchArticles(query);
+    res.json({ results });
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.post('/tools/call', async (req, res, next) => {
   const { tool_name, params } = req.body || {};
   if (typeof tool_name !== 'string' || typeof params !== 'object' || params === null || Array.isArray(params)) {
@@ -40,7 +53,7 @@ app.post('/tools/call', async (req, res, next) => {
   }
 
   const map = {
-    searchArticles: searchArticles,
+    searchArticles: (p) => searchArticles(p.query ?? p),
     indexArticle: (p) => indexArticle(p.article ?? p),
   };
 
