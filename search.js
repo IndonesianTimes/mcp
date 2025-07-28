@@ -53,19 +53,31 @@ async function indexArticle(data) {
 
 /**
  * Mencari artikel berdasarkan query.
- * @param {object} params
+ * @param {string} query
+ * @returns {Promise<{id: string|number, title: string, snippet: string}[]>}
  */
-async function searchArticles(params) {
-  if (typeof params !== 'object' || params === null) {
-    throw new Error('params harus objek');
-  }
-  const { query } = params;
+async function searchArticles(query) {
   if (typeof query !== 'string') {
     throw new Error('query harus string');
   }
+  const cleaned = query.trim();
+  if (!cleaned) {
+    return [];
+  }
+
   const index = await getKnowledgeIndex();
   try {
-    return await index.search(query);
+    const result = await index.search(cleaned, {
+      attributesToRetrieve: ['id', 'title', 'content'],
+      attributesToCrop: ['content'],
+      cropLength: 80,
+      cropMarker: '...'
+    });
+    return (result.hits || []).map((h) => ({
+      id: h.id,
+      title: h.title,
+      snippet: (h._formatted && h._formatted.content) || h.content
+    }));
   } catch (err) {
     throw new Error(`Gagal melakukan pencarian: ${err.message}`);
   }
