@@ -92,7 +92,16 @@ def main():
         except Exception as exc:
             logging.error('Failed to convert entry %s: %s', entry, exc)
             continue
-        if not art['title'] or len(art['content']) < 50:
+
+        if not art['id']:
+            logging.warning('Skipping entry with empty id')
+            continue
+
+        if not art['title'] or not art['content'] or not art['category'] or not art['createdAt']:
+            logging.warning('Skipping id %s due to missing fields', art['id'])
+            continue
+
+        if len(art['content']) < 50:
             logging.warning('Skipping id %s due to invalid title or content', art['id'])
             continue
         if send_article(args.url, art, args.skip_duplicates):
