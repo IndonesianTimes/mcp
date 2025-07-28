@@ -1,6 +1,43 @@
 # mcp
 
+[![Docker Ready](https://img.shields.io/badge/docker-ready-blue)](docker-compose.yml)
+[![OpenAI Compatible](https://img.shields.io/badge/openai-compatible-green)](#)
+[![Meilisearch Inside](https://img.shields.io/badge/meilisearch-inside-blueviolet)](#)
+
 This project is a minimal Express server used in tests. It now includes a small AI helper utility and an `/ask` endpoint.
+
+## Cara jalan cepat
+
+1. Clone repo ini.
+2. Jalankan `bash setup.sh`.
+3. Akses `http://localhost:3000` di browser.
+
+## Struktur Folder
+
+```
+.
+├── ai.js
+├── server.js
+├── search.js
+├── docker-compose.yml
+├── public/
+├── __tests__/
+├── test_data/
+└── ...
+```
+
+## Endpoint API
+
+| Method | Endpoint | Auth | Deskripsi |
+| ------ | -------- | ---- | --------- |
+| GET | `/healthz` | - | Cek kesehatan server |
+| GET | `/status` | - | Info status aplikasi |
+| POST | `/data` | Bearer | Mengembalikan data yang dikirim |
+| POST | `/articles` | Bearer | Menyimpan artikel ke Meilisearch |
+| GET | `/search?query=...` | Bearer | Mencari artikel |
+| POST | `/tools/call` | Bearer | Menjalankan tool tertentu |
+| GET | `/tools/list` | Bearer | Daftar tool yang tersedia |
+| POST | `/ask` | Bearer | Ajukan pertanyaan ke LLM |
 
 ## Adding a new LLM backend
 
