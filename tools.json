@@ -18,6 +18,11 @@
     "name": "multiplyNumbers",
     "description": "Multiply two numbers",
     "params": ["a", "b"]
+  },
+  {
+    "name": "queryKnowledgeBase",
+    "description": "Query knowledge base for game results",
+    "params": ["query"]
   }
 ]
 

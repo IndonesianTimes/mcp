@@ -7,6 +7,7 @@ const {
   isMeiliConnected,
 } = require('./search');
 const { addNumbers, multiplyNumbers } = require('./dummyTools');
+const { queryKnowledgeBase } = require('./kb');
 const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
@@ -161,6 +162,7 @@ app.post('/tools/call', async (req, res, next) => {
     indexArticle: (p) => indexArticle(p.article ?? p),
     addNumbers,
     multiplyNumbers,
+    queryKnowledgeBase: (p) => queryKnowledgeBase(p.query ?? p),
   };
 
   const fn = map[tool_name];

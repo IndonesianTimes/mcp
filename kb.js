@@ -144,4 +144,21 @@ async function findKBResults(query) {
   return results;
 }
 
-module.exports = { loadKBFromMapping, findKBResults };
+/**
+ * Helper tool untuk menanyakan knowledge base. Param `params` dapat berupa
+ * string query langsung atau objek dengan properti `query`.
+ *
+ * @param {string|{query:string}} params input query
+ * @returns {Promise<any[]>}
+ */
+async function queryKnowledgeBase(params) {
+  const query =
+    typeof params === 'object' && params !== null ? params.query : params;
+  if (typeof query !== 'string') {
+    throw new Error('query harus string');
+  }
+  const results = await findKBResults(query);
+  return results.slice(0, 10);
+}
+
+module.exports = { loadKBFromMapping, findKBResults, queryKnowledgeBase };
