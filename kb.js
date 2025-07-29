@@ -65,4 +65,83 @@ async function loadKBFromMapping(mappingPath) {
   return lookup;
 }
 
-module.exports = { loadKBFromMapping };
+/**
+ * Cari hasil knowledge base berdasarkan query menggunakan mapping glossary.
+ * Mapping dibaca dari path pada env `KB_MAPPING_PATH` atau default `test_data/kb_search_mapping.json`.
+ *
+ * @param {string} query kata kunci yang akan dicari
+ * @returns {Promise<any[]>} array gabungan isi file yang cocok
+ */
+async function findKBResults(query) {
+  if (typeof query !== 'string') {
+    throw new TypeError('query must be a string');
+  }
+  const words = query
+    .toLowerCase()
+    .split(/\s+/)
+    .map((w) => w.trim())
+    .filter(Boolean);
+  if (words.length === 0) {
+    return [];
+  }
+
+  const mappingPath = process.env.KB_MAPPING_PATH ||
+    path.join(__dirname, 'test_data', 'kb_search_mapping.json');
+
+  let mappingData;
+  try {
+    const raw = await fs.promises.readFile(mappingPath, 'utf8');
+    mappingData = JSON.parse(raw);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      throw new Error(`mapping file not found: ${mappingPath}`);
+    }
+    throw err;
+  }
+
+  const matchedFiles = new Set();
+  (function traverse(node) {
+    if (!node || typeof node !== 'object') return;
+    const glossary = Array.isArray(node.glossary)
+      ? node.glossary.map((g) => String(g).toLowerCase())
+      : [];
+    if (glossary.some((g) => words.includes(g))) {
+      if (Array.isArray(node.files)) {
+        for (const f of node.files) {
+          matchedFiles.add(String(f));
+        }
+      }
+    }
+    for (const key of Object.keys(node)) {
+      if (key === 'files' || key === 'glossary') continue;
+      traverse(node[key]);
+    }
+  })(mappingData);
+
+  if (matchedFiles.size === 0) {
+    return [];
+  }
+
+  const baseDir = path.dirname(mappingPath);
+  const results = [];
+  for (const rel of matchedFiles) {
+    const filePath = path.resolve(baseDir, rel);
+    let content;
+    try {
+      content = await fs.promises.readFile(filePath, 'utf8');
+    } catch (err) {
+      if (err.code === 'ENOENT') {
+        throw new Error(`file not found: ${filePath}`);
+      }
+      throw err;
+    }
+    const data = JSON.parse(content);
+    if (Array.isArray(data)) {
+      results.push(...data);
+    }
+  }
+
+  return results;
+}
+
+module.exports = { loadKBFromMapping, findKBResults };
