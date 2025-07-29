@@ -7,7 +7,7 @@ const {
   isMeiliConnected,
 } = require('./search');
 const { addNumbers, multiplyNumbers } = require('./dummyTools');
-const { queryKnowledgeBase } = require('./kb');
+const { queryKnowledgeBase, findKBResults } = require('./kb');
 const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
@@ -211,6 +211,19 @@ app.post('/ask', async (req, res) => {
   } catch (err) {
     logger.error(`askAI failed: ${err.message}`);
     sendError(res, 500, 'AI processing failed');
+  }
+});
+
+app.post('/kb/query', async (req, res, next) => {
+  const { query } = req.body || {};
+  if (typeof query !== 'string' || query.trim().length < 3) {
+    return sendError(res, 400, 'query minimal 3 karakter');
+  }
+  try {
+    const results = await findKBResults(query);
+    sendSuccess(res, results);
+  } catch (err) {
+    next(err);
   }
 });
 
