@@ -7,9 +7,11 @@ process.env.JWT_SECRET = 'secret';
 
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 const app = require('../server');
 
 const token = jwt.sign({ userId: 1 }, 'secret');
+process.env.KB_MAPPING_PATH = path.join(__dirname, '..', 'test_data', 'kb_search_mapping.json');
 
 describe('API endpoints', () => {
   test('/tools/list returns valid JSON', async () => {
@@ -88,6 +90,27 @@ describe('API endpoints', () => {
       .post('/ask')
       .set('Authorization', `Bearer ${token}`)
       .send({ question: '   ' });
+    expect(res.status).toBe(400);
+    expect(res.body.success).toBe(false);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  test('/kb/query returns results', async () => {
+    const res = await request(app)
+      .post('/kb/query')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ query: 'alpha' });
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data.length).toBeGreaterThan(0);
+  });
+
+  test('/kb/query validates minimal length', async () => {
+    const res = await request(app)
+      .post('/kb/query')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ query: 'ab' });
     expect(res.status).toBe(400);
     expect(res.body.success).toBe(false);
     expect(res.body).toHaveProperty('error');
