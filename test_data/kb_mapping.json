@@ -1,0 +1,9 @@
+{
+  "files": ["kb1.json"],
+  "nested": {
+    "files": ["nested/kb2.json"],
+    "more": {
+      "files": ["nested/kb3.json"]
+    }
+  }
+}
