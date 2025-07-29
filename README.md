@@ -22,6 +22,16 @@ This project is a minimal Express server used in tests. It now includes a small 
 2. Jalankan `bash setup.sh`.
 3. Akses `http://localhost:3000` di browser.
 
+## 🔧 Setup
+
+```bash
+git clone ...
+cd mcp
+cp .env.example .env
+npm install
+docker-compose up -d
+```
+
 ## Struktur Folder
 
 ```
