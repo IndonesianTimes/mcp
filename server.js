@@ -138,7 +138,7 @@ app.post('/articles', async (req, res, next) => {
 });
 
 app.get('/search', async (req, res, next) => {
-  const query = typeof req.query.query === 'string' ? req.query.query : req.query.q;
+  const { query } = req.query;
   if (typeof query !== 'string' || !query.trim()) {
     return sendError(res, 400, 'parameter query wajib diisi');
   }
@@ -176,30 +176,27 @@ app.post('/tools/call', async (req, res, next) => {
   }
 });
 
-app.get('/tools/list', (req, res) => {
+app.get('/tools/list', async (req, res) => {
   const filePath = path.join(__dirname, 'tools.json');
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      if (err.code === 'ENOENT') {
-        return sendSuccess(res, []);
-      }
-      logger.error(`Failed to read tools.json: ${err.message}`);
+  try {
+    const data = await fs.promises.readFile(filePath, 'utf8');
+    const tools = JSON.parse(data);
+    if (!Array.isArray(tools)) {
+      throw new Error('tools data is not an array');
+    }
+    sendSuccess(res, tools);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      logger.error(`tools.json not found: ${err.message}`);
       return sendError(res, 500, 'Failed to read tools data');
     }
-
-    let tools;
-    try {
-      tools = JSON.parse(data || '[]');
-      if (!Array.isArray(tools)) {
-        throw new Error('tools data is not an array');
-      }
-    } catch (e) {
-      logger.error(`Invalid tools.json: ${e.message}`);
+    if (err instanceof SyntaxError || err.message.includes('tools data is not an array')) {
+      logger.error(`Invalid tools.json: ${err.message}`);
       return sendError(res, 500, 'Failed to parse tools data');
     }
-
-    sendSuccess(res, tools);
-  });
+    logger.error(`Failed to read tools.json: ${err.message}`);
+    sendError(res, 500, 'Failed to read tools data');
+  }
 });
 
 app.post('/ask', async (req, res) => {
