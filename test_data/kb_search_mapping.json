@@ -1,0 +1,16 @@
+{
+  "glossary": ["alpha"],
+  "files": ["kb1.json"],
+  "nested": {
+    "glossary": ["beta"],
+    "files": ["nested/kb2.json"],
+    "more": {
+      "glossary": ["gamma"],
+      "files": ["nested/kb3.json"]
+    },
+    "other": {
+      "glossary": ["alpha", "epsilon"],
+      "files": ["kb1.json"]
+    }
+  }
+}
