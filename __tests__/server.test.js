@@ -14,8 +14,7 @@ const token = jwt.sign({ userId: 1 }, 'secret');
 describe('API endpoints', () => {
   test('/tools/list returns valid JSON', async () => {
     const res = await request(app)
-      .get('/tools/list')
-      .set('Authorization', `Bearer ${token}`);
+      .get('/tools/list');
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(Array.isArray(res.body.data)).toBe(true);
@@ -68,8 +67,7 @@ describe('API endpoints', () => {
     try {
       fs.writeFileSync(file, 'not [json]', 'utf8');
       const res = await request(app)
-        .get('/tools/list')
-        .set('Authorization', `Bearer ${token}`);
+        .get('/tools/list');
       expect(res.status).toBe(500);
       expect(res.body.success).toBe(false);
       expect(res.body).toHaveProperty('error');
@@ -81,7 +79,6 @@ describe('API endpoints', () => {
   test('/search returns JSON', async () => {
     const res = await request(app)
       .get('/search')
-      .set('Authorization', `Bearer ${token}`)
       .query({ query: 'random' });
     expect(typeof res.body).toBe('object');
   });
