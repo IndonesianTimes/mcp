@@ -2,32 +2,34 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Ask</title>
+  <title>Tanya AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <form id="askForm">
-    <input type="text" id="token" placeholder="Bearer token"><br>
-    <input type="text" id="question" placeholder="Your question">
-    <button type="submit">Ask</button>
-  </form>
-  <pre id="result"></pre>
-<script>
-document.getElementById('askForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const token = document.getElementById('token').value;
-  const question = document.getElementById('question').value;
-  const res = await fetch('/ask', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': token
-    },
-    body: JSON.stringify({ question })
-  });
-  let data = {};
-  try { data = await res.json(); } catch (e) {}
-  document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-});
-</script>
+<body class="p-4">
+  <div class="max-w-xl mx-auto space-y-4">
+    <form id="askForm" class="space-y-2">
+      <textarea id="question" rows="4" placeholder="Tulis pertanyaan..." class="w-full border p-2"></textarea>
+      <input id="token" type="text" placeholder="Bearer token (opsional)" class="w-full border p-2" />
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2">Kirim</button>
+    </form>
+    <pre id="result" class="bg-gray-100 p-2 rounded overflow-auto"></pre>
+  </div>
+  <script>
+    document.getElementById('askForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const question = document.getElementById('question').value;
+      const token = document.getElementById('token').value;
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = token;
+      const res = await fetch('/ask', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ question })
+      });
+      let data = {};
+      try { data = await res.json(); } catch {}
+      document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
 </body>
 </html>

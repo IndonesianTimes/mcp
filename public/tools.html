@@ -2,22 +2,29 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Tools</title>
+  <title>Daftar Tools</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <input type="text" id="token" placeholder="Bearer token">
-  <button id="load">Load Tools</button>
-  <pre id="result"></pre>
-<script>
-document.getElementById('load').addEventListener('click', async () => {
-  const token = document.getElementById('token').value;
-  const res = await fetch('/tools/list', {
-    headers: { 'Authorization': token }
-  });
-  let data = {};
-  try { data = await res.json(); } catch (e) {}
-  document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-});
-</script>
+<body class="p-4">
+  <div class="max-w-xl mx-auto space-y-4">
+    <button id="load" class="bg-blue-500 text-white px-4 py-2">Load Tools</button>
+    <ul id="list" class="list-disc pl-5"></ul>
+  </div>
+  <script>
+    document.getElementById('load').addEventListener('click', async () => {
+      const res = await fetch('/tools/list');
+      let data = {};
+      try { data = await res.json(); } catch {}
+      const list = document.getElementById('list');
+      list.innerHTML = '';
+      if (Array.isArray(data.data)) {
+        data.data.forEach(t => {
+          const li = document.createElement('li');
+          li.textContent = t.name + ' - ' + t.desc;
+          list.appendChild(li);
+        });
+      }
+    });
+  </script>
 </body>
 </html>
