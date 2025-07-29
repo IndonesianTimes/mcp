@@ -36,6 +36,7 @@ function sendError(res, code, message) {
 }
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+const publicEndpoints = ['/search', '/tools/list'];
 
 const app = express();
 const jsonParser = express.json();
@@ -96,7 +97,11 @@ app.get('/status', async (req, res) => {
 });
 
 // Bearer token authentication
-app.use((req, res, next) => {
+function authenticateToken(req, res, next) {
+  if (publicEndpoints.includes(req.path)) {
+    return next();
+  }
+
   const authHeader = req.headers && req.headers['authorization'];
   if (!authHeader || typeof authHeader !== 'string') {
     logger.error('Missing Authorization header');
@@ -115,7 +120,9 @@ app.use((req, res, next) => {
     logger.error(`JWT error: ${err.message}`);
     sendError(res, 401, 'Invalid token');
   }
-});
+}
+
+app.use(authenticateToken);
 
 app.post('/data', (req, res) => {
   sendSuccess(res, { received: req.body });
