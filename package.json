@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "plug-kb": "node tools/plug_kb_to_meili.js"
+    "start": "node server.js",
+    "plug-kb": "node tools/plug_kb_to_meili.js",
+    "doctor": "node tools/doctor.js"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +19,8 @@
     "meilisearch": "^0.51.0",
     "openai": "^5.10.2",
     "winston": "^3.17.0",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "chalk": "^4.1.2"
   },
   "devDependencies": {
     "jest": "^29.7.0",
