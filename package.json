@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "plug-kb": "node tools/plug_kb_to_meili.js"
   },
   "keywords": [],
   "author": "",
