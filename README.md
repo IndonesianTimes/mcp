@@ -1,83 +1,78 @@
-# mcp
+# MCP Server Modular
 
-[![Docker Ready](https://img.shields.io/badge/docker-ready-blue)]()
-[![Test Passed](https://img.shields.io/badge/tests-passing-brightgreen)]()
-[![AI Ready](https://img.shields.io/badge/LLM-openai-green)]()
+## 📚 Overview
+MCP Server adalah backend modular berbasis Node.js dan Express. Sistem ini ditujukan untuk tim developer, ops, dan AI yang memerlukan REST API fleksibel lengkap dengan knowledge base dan integrasi LLM.
 
-[![Docker Ready](https://img.shields.io/badge/docker-ready-blue)](docker-compose.yml)
-[![OpenAI Compatible](https://img.shields.io/badge/openai-compatible-green)](#)
-[![Meilisearch Inside](https://img.shields.io/badge/meilisearch-inside-blueviolet)](#)
+## ⚙️ Features
+- Modular REST API untuk Knowledge Base dan Tools
+- Plug-and-play KB menggunakan Meilisearch
+- GPT integration siap pakai melalui endpoint `/ask`
+- Self-check CLI `doctor.js` untuk memvalidasi lingkungan
+- Auto index dan search KB
 
-This project is a minimal Express server used in tests. It now includes a small AI helper utility and an `/ask` endpoint.
-
-## 🔥 Fitur Utama
-- 🧠 LLM Searchable AI
-- 🔍 Meilisearch-powered
-- 🔐 Validasi ketat dan logging aman
-- 🖥️ Web UI interaktif + CLI
-
-## Cara jalan cepat
-
-1. Clone repo ini.
-2. Jalankan `bash setup.sh`.
-3. Akses `http://localhost:3000` di browser.
-
-## 🔧 Setup
-
-```bash
-git clone ...
-cd mcp
-cp .env.example .env
-npm install
-docker-compose up -d
-```
-
-## Struktur Folder
-
-```
+## 📂 Directory Structure
+```text
 .
-├── ai.js
 ├── server.js
+├── kb.js
 ├── search.js
-├── docker-compose.yml
+├── tools/
+│   ├── plug_kb_to_meili.js
+│   └── doctor.js
 ├── public/
-├── __tests__/
+│   ├── index.html
+│   └── tools.html
 ├── test_data/
-└── ...
+└── .env
 ```
 
-## Endpoint API
+## 🚀 Setup
 
-| Method | Endpoint | Auth | Deskripsi |
-| ------ | -------- | ---- | --------- |
-| GET | `/healthz` | - | Cek kesehatan server |
-| GET | `/status` | - | Info status aplikasi |
-| POST | `/data` | Bearer | Mengembalikan data yang dikirim |
-| POST | `/articles` | Bearer | Menyimpan artikel ke Meilisearch |
-| GET | `/search?query=...` | Bearer | Mencari artikel |
-| POST | `/tools/call` | Bearer | Menjalankan tool tertentu |
-| GET | `/tools/list` | Bearer | Daftar tool yang tersedia |
-| POST | `/tools/plug-kb` | Admin | Muat ulang knowledge base ke Meilisearch |
-| POST | `/ask` | Bearer | Ajukan pertanyaan ke LLM |
+### 1. Install dependencies
+```bash
+npm install
+```
 
-## 📦 Environment Variables
+### 2. Buat file .env
+Contoh:
+```ini
+PORT=3000
+MEILI_HOST=http://localhost:7700
+MEILI_API_KEY=your-key
+OPENAI_API_KEY=your-openai-key
+JWT_SECRET=supersecret
+```
 
-Gunakan variabel berikut untuk mengatur perilaku aplikasi. Contoh nilai diberikan untuk memudahkan konfigurasi.
+### 3. Jalankan pemeriksaan awal
+```bash
+npm run doctor
+```
 
-| Key | Deskripsi | Contoh |
-|-----|-----------|--------|
-| `APP_MODE` | Mode aplikasi | `demo` |
-| `PORT` | Port server | `3000` |
-| `MEILI_HOST` | URL Meilisearch | `http://localhost:7700` |
-| `MEILI_API_KEY` | API Key Meili | `masterKey` |
-| `OPENAI_API_KEY` | API Key GPT | `sk-...` |
-| `JWT_SECRET` | Token untuk auth (optional) | `secret` |
+### 4. Jalankan server
+```bash
+npm start
+```
 
-## Adding a new LLM backend
+### 🤖 Plug-and-Play KB via Meilisearch
+Pastikan `knowledgebase_meili.json` sudah tersedia lalu jalankan:
+```bash
+npm run plug-kb
+```
 
-LLM providers are selected via the `LLM_BACKEND` environment variable. To add a new provider:
+## 🔎 API Reference
+- `GET /kb/search?query=&provider=&category=` → query dari Meili
+- `POST /kb/query` → query KB lokal dengan `mapping.json`
+- `POST /ask` → kirim pertanyaan ke GPT/LLM
+- `POST /tools/call` → eksekusi modular tools
+- `GET /status` → status server, LLM, Meili, uptime
 
-1. Create a module that exports a `generate(prompt: string): Promise<string>` function.
-2. Add a new branch in `ai.js` that checks for your backend name in `LLM_BACKEND` and calls your module.
+## 🔮 Testing
+Gunakan curl atau Postman untuk mencoba setiap endpoint. Jalankan unit test dengan:
+```bash
+npm test
+```
 
-No changes are required in the `/ask` endpoint because it delegates to `askAI()` which handles backend selection.
+## 🆘 Troubleshooting
+- Missing `.env` → jalankan `npm run doctor`
+- Meili tidak connect → cek `MEILI_HOST`
+- JWT error → cek `JWT_SECRET`
