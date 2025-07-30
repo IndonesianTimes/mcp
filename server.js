@@ -1,4 +1,8 @@
-require('dotenv').config();
+const dotenv = require('dotenv');
+const dotenvResult = dotenv.config();
+if (dotenvResult.error) {
+  console.warn('⚠️  .env file not found, falling back to environment variables');
+}
 const express = require('express');
 const {
   indexArticle,
@@ -14,6 +18,7 @@ const jwt = require('jsonwebtoken');
 const logger = require('./logger');
 const { askAI } = require('./ai');
 const { spawn } = require('child_process');
+const { MeiliSearch } = require('meilisearch');
 
 const requiredEnv = [
   'APP_MODE',
@@ -26,7 +31,12 @@ const requiredEnv = [
 const missingEnv = requiredEnv.filter((v) => !process.env[v]);
 if (missingEnv.length) {
   logger.error(`Missing environment variables: ${missingEnv.join(', ')}`);
+  console.error('Please create a .env file based on .env.example');
   process.exit(1);
+}
+
+if (!process.env.JWT_SECRET || !process.env.JWT_SECRET.trim() || process.env.JWT_SECRET === 'your-jwt-secret') {
+  console.warn('⚠️  JWT_SECRET is empty or using default value');
 }
 
 function sendSuccess(res, data) {
@@ -268,9 +278,20 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 if (require.main === module) {
-  app.listen(PORT, () => {
-    logger.info(`MCP Server started on port ${PORT}`);
-  });
+  (async () => {
+    try {
+      const client = new MeiliSearch({
+        host: process.env.MEILI_HOST,
+        apiKey: process.env.API_KEY || process.env.MEILI_API_KEY,
+      });
+      await client.getIndex('knowledgebase');
+    } catch (err) {
+      console.warn('⚠️  Meili index "knowledgebase" not found. Run "npm run plug-kb" to create it.');
+    }
+    app.listen(PORT, () => {
+      logger.info(`MCP Server started on port ${PORT}`);
+    });
+  })();
 }
 
 module.exports = app;
