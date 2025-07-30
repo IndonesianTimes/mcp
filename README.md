@@ -1,78 +1,113 @@
 # MCP Server Modular
 
-## 📚 Overview
-MCP Server adalah backend modular berbasis Node.js dan Express. Sistem ini ditujukan untuk tim developer, ops, dan AI yang memerlukan REST API fleksibel lengkap dengan knowledge base dan integrasi LLM.
+![Node Version](https://img.shields.io/badge/node-%3E%3D20.x-brightgreen)
+![License](https://img.shields.io/badge/license-ISC-blue)
 
-## ⚙️ Features
-- Modular REST API untuk Knowledge Base dan Tools
-- Plug-and-play KB menggunakan Meilisearch
-- GPT integration siap pakai melalui endpoint `/ask`
-- Self-check CLI `doctor.js` untuk memvalidasi lingkungan
-- Auto index dan search KB
+## Overview
+MCP Server Modular adalah backend Node.js + Express yang menyediakan REST API
+untuk mengelola knowledge base dan integrasi Large Language Model (LLM).
+Server ini dirancang untuk developer AI, tim operasi, dan prompt engineer yang
+membutuhkan API fleksibel untuk query basis pengetahuan, pemanggilan tools,
+serta bertanya ke LLM secara langsung.
 
-## 📂 Directory Structure
+## Features
+- Knowledge Base (KB) berbasis mapping file
+- Integrasi KB ke Meilisearch
+- Endpoint LLM `/ask`
+- Modular tool-call melalui `/tools/call`
+- Upload KB JSON ke Meili dengan `npm run plug-kb`
+- Dokter sistem `npm run doctor`
+- Auto healthcheck melalui `/healthz` dan `/status`
+
+## Directory Structure
 ```text
 .
-├── server.js
-├── kb.js
-├── search.js
-├── tools/
-│   ├── plug_kb_to_meili.js
-│   └── doctor.js
-├── public/
-│   ├── index.html
-│   └── tools.html
-├── test_data/
-└── .env
+├── server.js          # Entry point Express
+├── search.js          # Integrasi Meilisearch
+├── kb.js              # Query KB berbasis mapping
+├── ai.js              # Wrapper LLM
+├── tools/             # Skrip utilitas
+│   ├── doctor.js
+│   └── plug_kb_to_meili.js
+├── public/            # Halaman web statis
+├── test_data/         # Contoh data & mapping
+└── __tests__/         # Unit test
 ```
 
-## 🚀 Setup
+## Setup Instructions
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+2. **Buat file `.env`** berdasarkan `.env.example`:
+   ```ini
+   APP_MODE=demo
+   PORT=3000
+   MEILI_HOST=http://localhost:7700
+   MEILI_API_KEY=masterKey
+   OPENAI_API_KEY=sk-xxx
+   JWT_SECRET=your-jwt-secret
+   ```
+3. **Jalankan dokter sistem**
+   ```bash
+   npm run doctor
+   ```
+4. **Start server**
+   ```bash
+   npm start
+   ```
 
-### 1. Install dependencies
+## Usage
+- `GET /kb/search?query=...` – pencarian KB di Meilisearch
+- `POST /kb/query` – pencarian KB lokal berbasis mapping
+- `POST /ask` – bertanya ke LLM
+- `POST /tools/call` – menjalankan tool terdaftar
+
+Contoh pemanggilan tool:
 ```bash
-npm install
+curl -H "Authorization: Bearer <token>" \
+     -H "Content-Type: application/json" \
+     -d '{"tool_name":"addNumbers","params":{"a":2,"b":3}}' \
+     http://localhost:3000/tools/call
 ```
 
-### 2. Buat file .env
-Contoh:
-```ini
-PORT=3000
-MEILI_HOST=http://localhost:7700
-MEILI_API_KEY=your-key
-OPENAI_API_KEY=your-openai-key
-JWT_SECRET=supersecret
-```
+Untuk mengirim pertanyaan ke GPT melalui endpoint `/ask` gunakan body JSON
+`{"question":"Apa itu MCP?"}`.
 
-### 3. Jalankan pemeriksaan awal
-```bash
-npm run doctor
-```
-
-### 4. Jalankan server
-```bash
-npm start
-```
-
-### 🤖 Plug-and-Play KB via Meilisearch
-Pastikan `knowledgebase_meili.json` sudah tersedia lalu jalankan:
+## Plug-and-Play KB
+Upload seluruh dokumen di `knowledgebase_meili.json` ke Meilisearch dengan:
 ```bash
 npm run plug-kb
 ```
+Pastikan Meilisearch telah berjalan dan variabel lingkungan sudah benar.
 
-## 🔎 API Reference
-- `GET /kb/search?query=&provider=&category=` → query dari Meili
-- `POST /kb/query` → query KB lokal dengan `mapping.json`
-- `POST /ask` → kirim pertanyaan ke GPT/LLM
-- `POST /tools/call` → eksekusi modular tools
-- `GET /status` → status server, LLM, Meili, uptime
+## Scripts
+- `npm start` – menjalankan server
+- `npm run doctor` – memeriksa konfigurasi dan koneksi
+- `npm run plug-kb` – mengindeks KB JSON ke Meilisearch
+- `npm test` – menjalankan unit test
 
-## 🔮 Testing
-Gunakan curl atau Postman untuk mencoba setiap endpoint. Jalankan unit test dengan:
-```bash
-npm test
-```
+## API Reference
+| Method | Path | Deskripsi |
+| ------ | ---- | --------- |
+| `GET`  | `/search` | Pencarian artikel di Meili (`query` parameter) |
+| `GET`  | `/healthz` | Healthcheck sederhana |
+| `GET`  | `/status` | Informasi server & koneksi |
+| `POST` | `/articles` | Tambah artikel ke Meili |
+| `POST` | `/tools/call` | Eksekusi tool terdaftar |
+| `GET`  | `/tools/list` | Daftar tool yang tersedia |
+| `POST` | `/tools/plug-kb` | Jalankan plug KB (admin only) |
+| `POST` | `/kb/query` | Query KB lokal berdasarkan mapping |
+| `GET`  | `/kb/search` | Pencarian KB dari Meili |
+| `POST` | `/ask` | Bertanya ke LLM |
 
-## 🆘 Troubleshooting
-- Missing `.env` → jalankan `npm run doctor`
-- Meili tidak connect → cek `MEILI_HOST`
-- JWT error → cek `JWT_SECRET`
+Semua endpoint kecuali `/search` dan `/tools/list` memerlukan Bearer token JWT.
+
+## Troubleshooting
+- **.env tidak ditemukan** – salin dari `.env.example` lalu jalankan `npm run doctor`.
+- **Meilisearch gagal konek** – pastikan `MEILI_HOST` dan `MEILI_API_KEY` benar.
+- **JWT error** – periksa nilai `JWT_SECRET` dan token yang dikirim.
+- **Knowledge base tidak terindeks** – jalankan `npm run plug-kb` dan cek log.
+
+## License
+ISC
