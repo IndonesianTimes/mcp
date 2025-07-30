@@ -116,6 +116,23 @@ describe('API endpoints', () => {
     expect(res.body).toHaveProperty('error');
   });
 
+  test('/tools/plug-kb rejects non-admin', async () => {
+    const res = await request(app)
+      .post('/tools/plug-kb')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(403);
+    expect(res.body.success).toBe(false);
+  });
+
+  test('/tools/plug-kb works for admin', async () => {
+    const adminToken = jwt.sign({ userId: 2, role: 'admin' }, 'secret');
+    const res = await request(app)
+      .post('/tools/plug-kb')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/Process exited/);
+  });
+
   test('/healthz returns JSON', async () => {
     const res = await request(app).get('/healthz');
     expect(typeof res.body).toBe('object');

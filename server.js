@@ -13,6 +13,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const logger = require('./logger');
 const { askAI } = require('./ai');
+const { spawn } = require('child_process');
 
 const requiredEnv = [
   'APP_MODE',
@@ -225,6 +226,29 @@ app.post('/kb/query', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+app.post('/tools/plug-kb', (req, res) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return sendError(res, 403, 'Forbidden');
+  }
+
+  const script = path.join(__dirname, 'tools', 'plug_kb_to_meili.js');
+  const child = spawn('node', [script]);
+
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+
+  child.stdout.on('data', (data) => {
+    res.write(data);
+  });
+
+  child.stderr.on('data', (data) => {
+    res.write(data);
+  });
+
+  child.on('close', (code) => {
+    res.end(`\nProcess exited with code ${code}`);
+  });
 });
 
 // Error handling middleware for invalid JSON

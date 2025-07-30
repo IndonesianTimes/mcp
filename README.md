@@ -57,6 +57,7 @@ docker-compose up -d
 | GET | `/search?query=...` | Bearer | Mencari artikel |
 | POST | `/tools/call` | Bearer | Menjalankan tool tertentu |
 | GET | `/tools/list` | Bearer | Daftar tool yang tersedia |
+| POST | `/tools/plug-kb` | Admin | Muat ulang knowledge base ke Meilisearch |
 | POST | `/ask` | Bearer | Ajukan pertanyaan ke LLM |
 
 ## 📦 Environment Variables
