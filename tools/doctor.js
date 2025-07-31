@@ -37,14 +37,31 @@ function checkExists(p, isDir = false) {
   }
 }
 
+function ensureDir(p, name) {
+  if (!checkExists(p, true)) {
+    try {
+      fs.mkdirSync(p, { recursive: true });
+      console.log(chalk.yellow(`Created missing ${name}/ folder`));
+    } catch (err) {
+      log(false, `${name}/ folder missing and failed to create: ${err.message}`);
+      return false;
+    }
+  }
+  return true;
+}
+
 async function run() {
   console.log(chalk.cyan.bold('MCP Doctor Running...'));
 
   // folder checks
   log(checkExists(path.join(__dirname, '..', 'public'), true), 'public/ folder found', 'public/ folder missing');
   log(checkExists(path.join(__dirname, '..', 'tools'), true), 'tools/ folder found', 'tools/ folder missing');
-  log(checkExists(path.join(__dirname, '..', 'kb'), true), 'kb/ folder found', 'kb/ folder missing');
-  log(checkExists(path.join(__dirname, '..', 'logs'), true), 'logs/ folder found', 'logs/ folder missing');
+
+  const kbPath = path.join(__dirname, '..', 'kb');
+  log(ensureDir(kbPath, 'kb'), 'kb/ folder ready', 'kb/ folder missing');
+
+  const logsPath = path.join(__dirname, '..', 'logs');
+  log(ensureDir(logsPath, 'logs'), 'logs/ folder ready', 'logs/ folder missing');
 
   // file checks
   log(checkExists(path.join(__dirname, '..', '.env')), '.env found', '.env missing');
