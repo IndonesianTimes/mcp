@@ -10,8 +10,8 @@ const {
   checkMeiliConnection,
   isMeiliConnected,
 } = require('./search');
-const { addNumbers, multiplyNumbers } = require('./dummyTools');
 const { queryKnowledgeBase, findKBResults } = require('./kb');
+const toolCaller = require('./tools/call');
 const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
@@ -185,23 +185,13 @@ app.post('/tools/call', async (req, res, next) => {
     return sendError(res, 400, 'tool_name harus string dan params harus objek');
   }
 
-  const map = {
-    searchArticles: (p) => searchArticles(p.query ?? p),
-    indexArticle: (p) => indexArticle(p.article ?? p),
-    addNumbers,
-    multiplyNumbers,
-    queryKnowledgeBase: (p) => queryKnowledgeBase(p.query ?? p),
-  };
-
-  const fn = map[tool_name];
-  if (!fn) {
-    return sendError(res, 404, 'Tool tidak ditemukan');
-  }
-
   try {
-    const result = await fn(params);
+    const result = await toolCaller.callTool(tool_name, params);
     sendSuccess(res, result);
   } catch (err) {
+    if (err.message.includes('Tool tidak ditemukan')) {
+      return sendError(res, 404, err.message);
+    }
     next(err);
   }
 });
