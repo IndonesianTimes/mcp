@@ -1,4 +1,5 @@
 const { queryKnowledgeBase } = require('../../kb');
+const logger = require('../../logger');
 
 module.exports = async function(params) {
   const query = typeof params === 'object' && params !== null ? (params.query ?? params) : params;
@@ -11,7 +12,7 @@ if (require.main === module) {
   try {
     params = JSON.parse(input);
   } catch (err) {
-    console.error('Invalid JSON input');
+    logger.error('Invalid JSON input');
     process.exit(1);
   }
   module.exports(params)
@@ -19,7 +20,7 @@ if (require.main === module) {
       console.log(JSON.stringify(res, null, 2));
     })
     .catch(err => {
-      console.error(err.message);
+      logger.error(err.message);
       process.exit(1);
     });
 }

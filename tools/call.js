@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const logger = require('../logger');
 
 const modulesDir = path.join(__dirname, 'modules');
 
@@ -27,8 +28,16 @@ function getTool(name) {
 }
 
 async function callTool(name, params) {
+  logger.info(`Executing tool: ${name}`);
   const fn = getTool(name);
-  return await fn(params);
+  try {
+    const result = await fn(params);
+    logger.info(`Tool ${name} succeeded`);
+    return result;
+  } catch (err) {
+    logger.error(`Tool ${name} failed: ${err.message}`);
+    throw err;
+  }
 }
 
 function listToolsFallback() {
@@ -56,14 +65,14 @@ module.exports = { loadTools, callTool, getToolList };
 if (require.main === module) {
   const [,, toolName, paramsJson='{}'] = process.argv;
   if (!toolName) {
-    console.error('Usage: node tools/call.js <toolName> [paramsJson]');
+    logger.error('Usage: node tools/call.js <toolName> [paramsJson]');
     process.exit(1);
   }
   let params = {};
   try {
     params = JSON.parse(paramsJson);
   } catch (err) {
-    console.error('Invalid JSON for params');
+    logger.error('Invalid JSON for params');
     process.exit(1);
   }
   callTool(toolName, params)
@@ -71,7 +80,7 @@ if (require.main === module) {
       console.log(JSON.stringify(res, null, 2));
     })
     .catch(err => {
-      console.error(err.message);
+      logger.error(err.message);
       process.exit(1);
     });
 }

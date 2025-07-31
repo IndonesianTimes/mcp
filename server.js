@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 const dotenvResult = dotenv.config();
 if (dotenvResult.error) {
-  console.warn('⚠️  .env file not found, falling back to environment variables');
+  logger.warn('⚠️  .env file not found, falling back to environment variables');
 }
 const express = require('express');
 const {
@@ -32,12 +32,12 @@ const requiredEnv = [
 const missingEnv = requiredEnv.filter((v) => !process.env[v]);
 if (missingEnv.length) {
   logger.error(`Missing environment variables: ${missingEnv.join(', ')}`);
-  console.error('Please create a .env file based on .env.example');
+  logger.error('Please create a .env file based on .env.example');
   process.exit(1);
 }
 
 if (!process.env.JWT_SECRET || !process.env.JWT_SECRET.trim() || process.env.JWT_SECRET === 'your-jwt-secret') {
-  console.warn('⚠️  JWT_SECRET is empty or using default value');
+  logger.warn('⚠️  JWT_SECRET is empty or using default value');
 }
 
 function sendSuccess(res, data) {
@@ -144,57 +144,61 @@ app.post('/data', (req, res) => {
   sendSuccess(res, { received: req.body });
 });
 
-app.post('/articles', async (req, res, next) => {
-  try {
-    const result = await indexArticle(req.body);
-    sendSuccess(res, { indexed: result });
-  } catch (err) {
-    next(err);
-  }
-});
+  app.post('/articles', async (req, res, next) => {
+    try {
+      const result = await indexArticle(req.body);
+      sendSuccess(res, { indexed: result });
+    } catch (err) {
+      logger.error(`indexArticle failed: ${err.message}`);
+      next(err);
+    }
+  });
 
-app.get('/search', async (req, res, next) => {
-  const { query } = req.query;
-  if (typeof query !== 'string' || !query.trim()) {
-    return sendError(res, 400, 'parameter query wajib diisi');
-  }
-  try {
-    const results = await searchArticles(query);
-    sendSuccess(res, results);
-  } catch (err) {
-    next(err);
-  }
-});
+  app.get('/search', async (req, res, next) => {
+    const { query } = req.query;
+    if (typeof query !== 'string' || !query.trim()) {
+      return sendError(res, 400, 'parameter query wajib diisi');
+    }
+    try {
+      const results = await searchArticles(query);
+      sendSuccess(res, results);
+    } catch (err) {
+      logger.error(`searchArticles failed: ${err.message}`);
+      next(err);
+    }
+  });
 
-app.get('/kb/search', async (req, res, next) => {
-  const { query } = req.query;
-  if (typeof query !== 'string' || !query.trim()) {
-    return sendError(res, 400, 'parameter query wajib diisi');
-  }
-  try {
-    const results = await searchArticles(query);
-    sendSuccess(res, results);
-  } catch (err) {
-    next(err);
-  }
-});
+  app.get('/kb/search', async (req, res, next) => {
+    const { query } = req.query;
+    if (typeof query !== 'string' || !query.trim()) {
+      return sendError(res, 400, 'parameter query wajib diisi');
+    }
+    try {
+      const results = await searchArticles(query);
+      sendSuccess(res, results);
+    } catch (err) {
+      logger.error(`kb search failed: ${err.message}`);
+      next(err);
+    }
+  });
 
-app.post('/tools/call', async (req, res, next) => {
+  app.post('/tools/call', async (req, res, next) => {
   const { tool_name, params } = req.body || {};
   if (typeof tool_name !== 'string' || typeof params !== 'object' || params === null || Array.isArray(params)) {
     return sendError(res, 400, 'tool_name harus string dan params harus objek');
   }
 
-  try {
-    const result = await toolCaller.callTool(tool_name, params);
-    sendSuccess(res, result);
-  } catch (err) {
-    if (err.message.includes('Tool tidak ditemukan')) {
-      return sendError(res, 404, err.message);
+    try {
+      const result = await toolCaller.callTool(tool_name, params);
+      sendSuccess(res, result);
+    } catch (err) {
+      if (err.message.includes('Tool tidak ditemukan')) {
+        return sendError(res, 404, err.message);
+      }
+      logger.error(`tool call failed: ${err.message}`);
+      next(err);
     }
-    next(err);
-  }
-});
+  });
 
 app.get('/tools/list', async (req, res) => {
   const filePath = path.join(__dirname, 'tools.json');
@@ -232,18 +236,19 @@ app.post('/ask', async (req, res) => {
   }
 });
 
-app.post('/kb/query', async (req, res, next) => {
+  app.post('/kb/query', async (req, res, next) => {
   const { query } = req.body || {};
   if (typeof query !== 'string' || query.trim().length < 3) {
     return sendError(res, 400, 'query minimal 3 karakter');
   }
-  try {
-    const results = await findKBResults(query);
-    sendSuccess(res, results);
-  } catch (err) {
-    next(err);
-  }
-});
+    try {
+      const results = await findKBResults(query);
+      sendSuccess(res, results);
+    } catch (err) {
+      logger.error(`kb query failed: ${err.message}`);
+      next(err);
+    }
+  });
 
 app.post('/tools/plug-kb', (req, res) => {
   if (!req.user || req.user.role !== 'admin') {
@@ -278,7 +283,7 @@ app.use((err, req, res, next) => {
 
 // Generic error handler to always return JSON
 app.use((err, req, res, next) => {
-  logger.error(err);
+  logger.error(err.stack || err.message);
   const status = err.status || 500;
   sendError(res, status, err.message || 'Internal Server Error');
 });
@@ -293,7 +298,7 @@ if (require.main === module) {
       });
       await client.getIndex('knowledgebase');
     } catch (err) {
-      console.warn('⚠️  Meili index "knowledgebase" not found. Run "npm run plug-kb" to create it.');
+      logger.warn('⚠️  Meili index "knowledgebase" not found. Run "npm run plug-kb" to create it.');
     }
     app.listen(PORT, () => {
       logger.info(`MCP Server started on port ${PORT}`);

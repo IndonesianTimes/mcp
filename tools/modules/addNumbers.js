@@ -1,4 +1,5 @@
 const { addNumbers } = require('../../dummyTools');
+const logger = require('../../logger');
 
 module.exports = async function(params) {
   return addNumbers(params);
@@ -10,7 +11,7 @@ if (require.main === module) {
   try {
     params = JSON.parse(input);
   } catch (err) {
-    console.error('Invalid JSON input');
+    logger.error('Invalid JSON input');
     process.exit(1);
   }
   Promise.resolve(module.exports(params))
@@ -18,7 +19,7 @@ if (require.main === module) {
       console.log(JSON.stringify(res, null, 2));
     })
     .catch(err => {
-      console.error(err.message);
+      logger.error(err.message);
       process.exit(1);
     });
 }

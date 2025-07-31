@@ -2,6 +2,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const { MeiliSearch } = require('meilisearch');
+const logger = require('../logger');
 
 async function main() {
   const filePath = path.join(__dirname, '..', 'knowledgebase_meili.json');
@@ -9,7 +10,7 @@ async function main() {
   try {
     raw = await fs.promises.readFile(filePath, 'utf8');
   } catch (err) {
-    console.error(`File not found: ${filePath}`);
+    logger.error(`File not found: ${filePath}`);
     process.exit(1);
   }
 
@@ -17,12 +18,12 @@ async function main() {
   try {
     docs = JSON.parse(raw);
   } catch (err) {
-    console.error(`Failed to parse JSON: ${err.message}`);
+    logger.error(`Failed to parse JSON: ${err.message}`);
     process.exit(1);
   }
 
   if (!Array.isArray(docs) || docs.length === 0) {
-    console.error('knowledgebase_meili.json is empty or invalid');
+    logger.error('knowledgebase_meili.json is empty or invalid');
     process.exit(1);
   }
 
@@ -47,7 +48,7 @@ async function main() {
     const task = await client.waitForTask(enqueued.taskUid);
     console.log(`Status: ${task.status}; taskUid: ${enqueued.taskUid}`);
   } catch (err) {
-    console.error(`Failed to index documents: ${err.message}`);
+    logger.error(`Failed to index documents: ${err.message}`);
     process.exit(1);
   }
 }
