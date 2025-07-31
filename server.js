@@ -163,7 +163,7 @@ app.get('/search', async (req, res, next) => {
   }
 });
 
-app.get('/kb/search', validateToken, async (req, res, next) => {
+app.get('/kb/search', async (req, res, next) => {
   const { query } = req.query;
   if (typeof query !== 'string' || !query.trim()) {
     return sendError(res, 400, 'parameter query wajib diisi');
