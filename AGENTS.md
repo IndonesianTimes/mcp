@@ -1,4 +1,5 @@
- MCP Server – Modular Command Processor
+> MCP Modular GPT Server
+This file defines and documents all agents/modules in the MCP system:
 
 This project is a **Node.js + Express based modular server** designed for running GPT-powered tools, local knowledge base queries, and LLM integrations. It is intentionally structured for human-friendly extensibility and can be maintained by non-engineers.
 
