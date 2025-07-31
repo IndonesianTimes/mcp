@@ -48,7 +48,10 @@ function sendError(res, code, message) {
   res.status(code).json({ success: false, data: null, error: message });
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET must be defined in the .env file');
+}
+const JWT_SECRET = process.env.JWT_SECRET;
 const publicEndpoints = ['/search', '/tools/list', '/kb/search'];
 
 const app = express();
