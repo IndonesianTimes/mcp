@@ -78,6 +78,7 @@ async function askAI(question) {
       }
       answerText = response.choices[0].message.content;
     } catch (err) {
+      logger.error(`OpenAI request failed: ${err.message}`);
       throw new Error(`OpenAI request failed: ${err.message}`);
     }
   } else if (BACKEND === 'local') {
@@ -85,6 +86,7 @@ async function askAI(question) {
       const local = require('./local_llm');
       answerText = await local.generate(fullPrompt);
     } catch (err) {
+      logger.error(`Local LLM error: ${err.message}`);
       throw new Error(`Local LLM error: ${err.message}`);
     }
   } else {

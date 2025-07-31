@@ -1,5 +1,6 @@
 const { MeiliSearch } = require('meilisearch');
 const { validateArticle } = require('./validation');
+const logger = require('./logger');
 
 const client = new MeiliSearch({
   host: process.env.MEILI_HOST || 'http://127.0.0.1:7700',
@@ -33,6 +34,7 @@ async function indexArticle(data) {
   try {
     article = validateArticle(data);
   } catch (err) {
+    logger.error(`Validasi artikel gagal: ${err.message}`);
     throw new Error(`Validasi gagal: ${err.message}`);
   }
 
@@ -40,6 +42,7 @@ async function indexArticle(data) {
   try {
     article.createdAt = new Date(article.createdAt).toISOString();
   } catch (err) {
+    logger.error(`createdAt parse error: ${err.message}`);
     throw new Error('createdAt tidak dapat diparse sebagai tanggal');
   }
 
@@ -47,6 +50,7 @@ async function indexArticle(data) {
   try {
     return await index.addDocuments([article]);
   } catch (err) {
+    logger.error(`Gagal mengirim ke mesin pencarian: ${err.message}`);
     throw new Error(`Gagal mengirim ke mesin pencarian: ${err.message}`);
   }
 }
@@ -79,6 +83,7 @@ async function searchArticles(query) {
       snippet: (h._formatted && h._formatted.content) || h.content
     }));
   } catch (err) {
+    logger.error(`Search failed: ${err.message}`);
     throw new Error(`Gagal melakukan pencarian: ${err.message}`);
   }
 }
@@ -92,6 +97,7 @@ async function isMeiliConnected() {
     await client.health();
     return true;
   } catch (err) {
+    logger.error(`Meili connection check failed: ${err.message}`);
     return false;
   }
 }

@@ -1,9 +1,10 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const logger = require('./logger');
 
 const { JWT_SECRET } = process.env;
 if (!JWT_SECRET) {
-  console.error('JWT_SECRET not set in .env');
+  logger.error('JWT_SECRET not set in .env');
   process.exit(1);
 }
 

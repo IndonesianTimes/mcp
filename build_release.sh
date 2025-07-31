@@ -14,7 +14,7 @@ find "$PROJECT_ROOT" -name '.DS_Store' -type f -delete
 find "$PROJECT_ROOT" -name '*~' -type f -delete
 
 # Copy project files to release directory
-rsync -av --exclude='.git' --exclude='release' --exclude='node_modules' --exclude='*.zip' --exclude='error.log' "$PROJECT_ROOT/" "$RELEASE_DIR/"
+rsync -av --exclude='.git' --exclude='release' --exclude='node_modules' --exclude='*.zip' --exclude='logs' "$PROJECT_ROOT/" "$RELEASE_DIR/"
 
 # Determine version
 if [ -f "$PROJECT_ROOT/VERSION.txt" ]; then

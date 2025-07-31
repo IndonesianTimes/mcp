@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const jwt = require('jsonwebtoken');
+const logger = require('./logger');
 const BASE_URL = process.env.MCP_URL || 'http://localhost:3000';
 const SECRET = process.env.JWT_SECRET || 'secret';
 const token = jwt.sign({ userId: 1 }, SECRET);
@@ -17,7 +18,7 @@ async function main() {
   } else if (cmd === 'search') {
     await doSearch(param);
   } else {
-    console.error(`Unknown command: ${cmd}`);
+    logger.error(`Unknown command: ${cmd}`);
     process.exit(1);
   }
 }
@@ -34,12 +35,12 @@ async function doAsk(question) {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.success) {
-      console.error('Error:', data.error || res.statusText);
+      logger.error(`Error: ${data.error || res.statusText}`);
       return;
     }
     console.log(JSON.stringify(data.data, null, 2));
   } catch (err) {
-    console.error('Network error:', err.message);
+    logger.error(`Network error: ${err.message}`);
   }
 }
 
@@ -51,12 +52,12 @@ async function doSearch(query) {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.success) {
-      console.error('Error:', data.error || res.statusText);
+      logger.error(`Error: ${data.error || res.statusText}`);
       return;
     }
     console.log(JSON.stringify(data.data, null, 2));
   } catch (err) {
-    console.error('Network error:', err.message);
+    logger.error(`Network error: ${err.message}`);
   }
 }
 

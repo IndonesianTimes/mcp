@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const logger = require('./logger');
 
 /** Cache for loaded mappings */
 const mappingCache = new Map();
@@ -23,6 +24,7 @@ async function loadKBFromMapping(mappingPath) {
     const raw = await fs.promises.readFile(mappingPath, 'utf8');
     mappingData = JSON.parse(raw);
   } catch (err) {
+    logger.error(`Failed to read mapping: ${err.message}`);
     if (err.code === 'ENOENT') {
       throw new Error(`mapping file not found: ${mappingPath}`);
     }
@@ -53,6 +55,7 @@ async function loadKBFromMapping(mappingPath) {
     try {
       content = await fs.promises.readFile(filePath, 'utf8');
     } catch (err) {
+      logger.error(`Failed to read KB file ${filePath}: ${err.message}`);
       if (err.code === 'ENOENT') {
         throw new Error(`file not found: ${filePath}`);
       }
@@ -93,6 +96,7 @@ async function findKBResults(query) {
     const raw = await fs.promises.readFile(mappingPath, 'utf8');
     mappingData = JSON.parse(raw);
   } catch (err) {
+    logger.error(`Failed to read mapping: ${err.message}`);
     if (err.code === 'ENOENT') {
       throw new Error(`mapping file not found: ${mappingPath}`);
     }
@@ -130,6 +134,7 @@ async function findKBResults(query) {
     try {
       content = await fs.promises.readFile(filePath, 'utf8');
     } catch (err) {
+      logger.error(`Failed to read KB file ${filePath}: ${err.message}`);
       if (err.code === 'ENOENT') {
         throw new Error(`file not found: ${filePath}`);
       }

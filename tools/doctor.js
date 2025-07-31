@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const { MeiliSearch } = require('meilisearch');
+const logger = require('../logger');
 require('dotenv').config();
 
 const requiredEnv = [
@@ -90,6 +91,7 @@ async function run() {
     console.log(chalk.green('✅ Connected to Meilisearch'));
   } catch (err) {
     allOk = false;
+    logger.error(`Cannot connect to Meilisearch: ${err.message}`);
     console.log(chalk.red(`❌ Cannot connect to Meilisearch: ${err.message}`));
     return finish();
   }
@@ -113,7 +115,9 @@ async function run() {
       console.log(chalk.green('✅ filterableAttributes check'));
     }
   } catch (err) {
-    warn(`knowledgebase index check failed: ${err.message}`);
+    const msg = `knowledgebase index check failed: ${err.message}`;
+    warn(msg);
+    logger.error(msg);
   }
 
   finish();
