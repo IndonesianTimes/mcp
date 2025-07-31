@@ -201,25 +201,12 @@ app.post('/data', (req, res) => {
   });
 
 app.get('/tools/list', async (req, res) => {
-  const filePath = path.join(__dirname, 'tools.json');
   try {
-    const data = await fs.promises.readFile(filePath, 'utf8');
-    const tools = JSON.parse(data);
-    if (!Array.isArray(tools)) {
-      throw new Error('tools data is not an array');
-    }
-    sendSuccess(res, tools);
+    const list = toolCaller.getDetailedToolList();
+    res.json({ tools: list });
   } catch (err) {
-    if (err.code === 'ENOENT') {
-      logger.error(`tools.json not found: ${err.message}`);
-      return sendError(res, 500, 'Failed to read tools data');
-    }
-    if (err instanceof SyntaxError || err.message.includes('tools data is not an array')) {
-      logger.error(`Invalid tools.json: ${err.message}`);
-      return sendError(res, 500, 'Failed to parse tools data');
-    }
-    logger.error(`Failed to read tools.json: ${err.message}`);
-    sendError(res, 500, 'Failed to read tools data');
+    logger.error(`Failed to list tools: ${err.message}`);
+    res.status(500).json({ error: 'Failed to list tools' });
   }
 });
 
