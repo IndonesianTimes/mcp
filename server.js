@@ -15,6 +15,7 @@ const { queryKnowledgeBase, findKBResults } = require('./kb');
 const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const validateToken = require('./tools/validateToken');
 const logger = require('./logger');
 const { askAI } = require('./ai');
 const { spawn } = require('child_process');
@@ -48,7 +49,7 @@ function sendError(res, code, message) {
 }
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
-const publicEndpoints = ['/search', '/tools/list'];
+const publicEndpoints = ['/search', '/tools/list', '/kb/search'];
 
 const app = express();
 const jsonParser = express.json();
@@ -150,6 +151,19 @@ app.post('/articles', async (req, res, next) => {
 });
 
 app.get('/search', async (req, res, next) => {
+  const { query } = req.query;
+  if (typeof query !== 'string' || !query.trim()) {
+    return sendError(res, 400, 'parameter query wajib diisi');
+  }
+  try {
+    const results = await searchArticles(query);
+    sendSuccess(res, results);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/kb/search', validateToken, async (req, res, next) => {
   const { query } = req.query;
   if (typeof query !== 'string' || !query.trim()) {
     return sendError(res, 400, 'parameter query wajib diisi');
