@@ -58,9 +58,54 @@ function getToolList() {
   return listToolsFallback();
 }
 
+function usageTemplate(toolName, params = []) {
+  const paramsObj = {};
+  if (Array.isArray(params)) {
+    params.forEach((p) => {
+      paramsObj[p] = `<${p}>`;
+    });
+  }
+  return {
+    endpoint: '/tools/call',
+    method: 'POST',
+    body: {
+      tool_name: toolName,
+      params: paramsObj,
+    },
+  };
+}
+
+function getDetailedToolList() {
+  loadTools();
+  const jsonPath = path.join(__dirname, '..', 'tools.json');
+  let meta = [];
+  try {
+    const data = fs.readFileSync(jsonPath, 'utf8');
+    const parsed = JSON.parse(data);
+    if (Array.isArray(parsed)) {
+      meta = parsed;
+    }
+  } catch {
+    // ignore when file missing or invalid
+  }
+  const metaMap = {};
+  meta.forEach((t) => {
+    metaMap[t.name] = t;
+  });
+
+  return Object.keys(tools).map((name) => {
+    const mod = tools[name];
+    const m = metaMap[name] || {};
+    const description = mod.description || m.description || '';
+    const example = mod.example_usage || mod.usage;
+    const usage = example || usageTemplate(name, m.params);
+    return { tool_name: name, description, usage };
+  });
+}
+
 loadTools();
 
-module.exports = { loadTools, callTool, getToolList };
+module.exports = { loadTools, callTool, getToolList, getDetailedToolList };
 
 if (require.main === module) {
   const [,, toolName, paramsJson='{}'] = process.argv;

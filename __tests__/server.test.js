@@ -18,8 +18,9 @@ describe('API endpoints', () => {
     const res = await request(app)
       .get('/tools/list');
     expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(Array.isArray(res.body.tools)).toBe(true);
+    expect(res.body.tools.length).toBeGreaterThan(0);
+    expect(res.body.tools[0]).toHaveProperty('tool_name');
   });
 
   test('/articles rejects empty id', async () => {
@@ -61,7 +62,7 @@ describe('API endpoints', () => {
     expect(res.body).toHaveProperty('error');
   });
 
-  test('/tools/list handles corrupted file', async () => {
+  test('/tools/list ignores corrupted file', async () => {
     const fs = require('fs');
     const path = require('path');
     const file = path.join(__dirname, '..', 'tools.json');
@@ -70,9 +71,8 @@ describe('API endpoints', () => {
       fs.writeFileSync(file, 'not [json]', 'utf8');
       const res = await request(app)
         .get('/tools/list');
-      expect(res.status).toBe(500);
-      expect(res.body.success).toBe(false);
-      expect(res.body).toHaveProperty('error');
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.tools)).toBe(true);
     } finally {
       fs.writeFileSync(file, original, 'utf8');
     }

@@ -96,6 +96,22 @@ Pastikan Meilisearch telah berjalan dan variabel lingkungan sudah benar.
 | `POST` | `/articles` | Tambah artikel ke Meili |
 | `POST` | `/tools/call` | Eksekusi tool terdaftar |
 | `GET`  | `/tools/list` | Daftar tool yang tersedia |
+Menampilkan array `tools` berisi metadata setiap modul. Contoh:
+```json
+{
+  "tools": [
+    {
+      "tool_name": "addNumbers",
+      "description": "Add two numbers",
+      "usage": {
+        "endpoint": "/tools/call",
+        "method": "POST",
+        "body": { "tool_name": "addNumbers", "params": { "a": 1, "b": 2 } }
+      }
+    }
+  ]
+}
+```
 | `POST` | `/tools/plug-kb` | Jalankan plug KB (admin only) |
 | `POST` | `/kb/query` | Query KB lokal berdasarkan mapping |
 | `GET`  | `/kb/search` | Pencarian KB dari Meili |
