@@ -4,47 +4,31 @@ const path = require('path');
 const { MeiliSearch } = require('meilisearch');
 const logger = require('../logger');
 
-if (!process.env.API_KEY) {
-  logger.warn('⚠️  API_KEY is not set; falling back to MEILI_API_KEY');
-}
-
 async function main() {
-  const filePath = path.join(__dirname, '..', 'knowledgebase_meili.json');
-  let raw;
-  try {
-    raw = await fs.promises.readFile(filePath, 'utf8');
-  } catch (err) {
-    logger.error(`File not found: ${filePath}`);
-    process.exit(1);
-  }
-
+  const kbPath = path.join(__dirname, '..', 'knowledgebase_meili.json');
   let docs;
   try {
-    docs = JSON.parse(raw);
+    docs = JSON.parse(await fs.promises.readFile(kbPath, 'utf8'));
   } catch (err) {
-    logger.error(`Failed to parse JSON: ${err.message}`);
+    logger.error('❌ Failed to read/parse KB JSON:', err.message);
     process.exit(1);
   }
-
-  docs = docs.map((d) => ({ ...d, id: String(d.id) }));
-
   if (!Array.isArray(docs) || docs.length === 0) {
-    logger.error('knowledgebase_meili.json is empty or invalid');
+    logger.error('❌ KB JSON invalid or empty');
     process.exit(1);
   }
+  docs = docs.map(d => ({ ...d, id: String(d.id) }));
+  logger.info(`Total documents: ${docs.length}`, { timestamp: new Date().toISOString() });
 
-  console.log(`Total documents: ${docs.length}`);
-
-  const client = new MeiliSearch({
-    host: process.env.MEILI_HOST || 'http://127.0.0.1:7700',
-    apiKey: process.env.API_KEY || process.env.MEILI_API_KEY || '',
-  });
+  const meiliHost = process.env.MEILI_HOST || 'http://127.0.0.1:7700';
+  const meiliApiKey = process.env.MEILI_API_KEY || process.env.API_KEY || '';
+  const client = new MeiliSearch({ host: meiliHost, apiKey: meiliApiKey });
 
   try {
     await client.health();
   } catch (err) {
-    logger.error(`Cannot connect to Meilisearch: ${err.message}`);
-    logger.warn('Skipping KB indexing because Meilisearch is offline');
+    logger.error('❌ Meili not reachable:', err.message);
+    logger.warn('⚠️  Skipping indexing because Meili offline');
     return;
   }
 
@@ -52,7 +36,8 @@ async function main() {
   try {
     index = await client.getIndex('knowledgebase');
   } catch {
-    logger.warn('knowledgebase index not found, creating...');
+    logger.warn('Index not found, creating...');
+    // Patch: selalu set primaryKey di Meili v1.6+
     index = await client.createIndex('knowledgebase', { primaryKey: 'id' });
   }
 
@@ -63,24 +48,24 @@ async function main() {
         filterableAttributes: ['provider', 'category', 'status'],
       });
     } catch (err) {
-      logger.warn(`updateSettings failed: ${err.message}`);
+      logger.warn('⚠️ updateSettings failed:', err.message);
     }
-  } else {
-    logger.warn('updateSettings is not available on this Meilisearch instance');
   }
 
   if (typeof index.addDocuments !== 'function') {
-    logger.error('addDocuments is not supported by this Meilisearch index');
+    logger.error('❌ addDocuments is not supported by this Meili index');
     process.exit(1);
   }
 
   try {
-    const enqueued = await index.addDocuments(docs);
-    const task = await client.waitForTask(enqueued.taskUid);
-    console.log(`Status: ${task.status}; taskUid: ${enqueued.taskUid}`);
+    const result = await index.addDocuments(docs);
+    logger.info('addDocuments() result:', JSON.stringify(result));
+    logger.info(`✅ Indexed ${docs.length} docs in 'knowledgebase'. No task polling (fire-and-forget, SDK legacy compatibility).`);
   } catch (err) {
-    logger.error(`Failed to index documents: ${err.message}`);
-    return;
+    logger.error('❌ Failed to index KB docs:', err.message);
+    logger.error('Detail:', JSON.stringify(err.detail || err, null, 2));
+    logger.error('Stack:', err.stack);
+    logger.error('Raw error object:', err);
   }
 }
 
