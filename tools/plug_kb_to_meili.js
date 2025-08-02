@@ -4,6 +4,10 @@ const path = require('path');
 const { MeiliSearch } = require('meilisearch');
 const logger = require('../logger');
 
+if (!process.env.API_KEY) {
+  logger.warn('⚠️  API_KEY is not set; falling back to MEILI_API_KEY');
+}
+
 async function main() {
   const filePath = path.join(__dirname, '..', 'knowledgebase_meili.json');
   let raw;
@@ -21,6 +25,8 @@ async function main() {
     logger.error(`Failed to parse JSON: ${err.message}`);
     process.exit(1);
   }
+
+  docs = docs.map((d) => ({ ...d, id: String(d.id) }));
 
   if (!Array.isArray(docs) || docs.length === 0) {
     logger.error('knowledgebase_meili.json is empty or invalid');

@@ -9,10 +9,10 @@ function validateArticle(data) {
   }
   const { id, title, content, tags, category, createdAt, author } = data;
 
-  if (typeof id !== 'string') {
-    throw new Error('id harus string');
+  if (typeof id !== 'string' && typeof id !== 'number') {
+    throw new Error('id harus string atau number');
   }
-  const idTrim = id.trim();
+  const idTrim = String(id).trim();
   if (!idTrim) {
     throw new Error('id tidak boleh kosong');
   }
@@ -47,7 +47,7 @@ function validateArticle(data) {
     parsedTags = tags.split(',').map((t) => t.trim()).filter(Boolean);
   }
   return {
-    id,
+    id: idTrim,
     title,
     content,
     tags: parsedTags,

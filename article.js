@@ -1,6 +1,6 @@
 /**
  * @typedef {Object} Article
- * @property {string|number} id
+ * @property {string} id
  * @property {string} title
  * @property {string} content
  * @property {string[]} tags

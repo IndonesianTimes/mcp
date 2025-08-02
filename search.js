@@ -2,6 +2,10 @@ const { MeiliSearch } = require('meilisearch');
 const { validateArticle } = require('./validation');
 const logger = require('./logger');
 
+if (!process.env.API_KEY) {
+  logger.warn('⚠️  API_KEY is not set; falling back to MEILI_API_KEY');
+}
+
 const client = new MeiliSearch({
   host: process.env.MEILI_HOST || 'http://127.0.0.1:7700',
   apiKey: process.env.API_KEY || process.env.MEILI_API_KEY || '',
