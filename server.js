@@ -5,6 +5,7 @@ if (dotenvResult.error) {
   logger.warn('⚠️  .env file not found, falling back to environment variables');
 }
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const {
   indexArticle,
   searchArticles,
@@ -102,6 +103,15 @@ function listEndpoints(app) {
 
 const app = express();
 const jsonParser = express.json();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(limiter);
 
 // Wrap express.json in try/catch to handle mis-parsed JSON
 app.use((req, res, next) => {
@@ -257,7 +267,7 @@ app.post('/tools/call', async (req, res, next) => {
   }
 });
 
-app.post('/tools/reload', (req, res, next) => {
+app.post('/admin/reload-tools', (req, res, next) => {
   if (!req.user || req.user.role !== 'admin') {
     return next(createError(403, 'Forbidden'));
   }

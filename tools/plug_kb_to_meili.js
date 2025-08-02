@@ -38,7 +38,8 @@ async function main() {
     await client.health();
   } catch (err) {
     logger.error(`Cannot connect to Meilisearch: ${err.message}`);
-    process.exit(1);
+    logger.warn('Skipping KB indexing because Meilisearch is offline');
+    return;
   }
 
   let index;
@@ -73,7 +74,7 @@ async function main() {
     console.log(`Status: ${task.status}; taskUid: ${enqueued.taskUid}`);
   } catch (err) {
     logger.error(`Failed to index documents: ${err.message}`);
-    process.exit(1);
+    return;
   }
 }
 
