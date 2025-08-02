@@ -147,4 +147,15 @@ describe('API endpoints', () => {
     expect(res.body.data).toHaveProperty('llm');
     expect(res.body.data).toHaveProperty('uptime');
   });
+
+  test('/routes lists endpoints', async () => {
+    const res = await request(app)
+      .get('/routes')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.routes)).toBe(true);
+    const paths = res.body.routes.map((r) => r.path);
+    expect(paths).toContain('/status');
+    expect(paths).toContain('/kb/search');
+  });
 });

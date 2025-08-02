@@ -16,12 +16,15 @@ const requiredEnv = [
 
 let allOk = true;
 
-function log(ok, message) {
+function log(ok, okMsg, failMsg, suggestion) {
   if (ok) {
-    console.log(chalk.green(`✅ ${message}`));
+    console.log(chalk.green(`✅ ${okMsg}`));
   } else {
     allOk = false;
-    console.log(chalk.red(`❌ ${message}`));
+    console.log(chalk.red(`❌ ${failMsg}`));
+    if (suggestion) {
+      console.log(chalk.yellow(`   → ${suggestion}`));
+    }
   }
 }
 
@@ -55,29 +58,27 @@ async function run() {
   console.log(chalk.cyan.bold('MCP Doctor Running...'));
 
   // folder checks
-  log(checkExists(path.join(__dirname, '..', 'public'), true), 'public/ folder found', 'public/ folder missing');
-  log(checkExists(path.join(__dirname, '..', 'tools'), true), 'tools/ folder found', 'tools/ folder missing');
+  log(checkExists(path.join(__dirname, '..', 'public'), true), 'public/ folder found', 'public/ folder missing', 'create public/ folder');
+  log(checkExists(path.join(__dirname, '..', 'tools'), true), 'tools/ folder found', 'tools/ folder missing', 'create tools/ folder');
 
   const kbPath = path.join(__dirname, '..', 'kb');
-  log(ensureDir(kbPath, 'kb'), 'kb/ folder ready', 'kb/ folder missing');
+  log(ensureDir(kbPath, 'kb'), 'kb/ folder ready', 'kb/ folder missing', 'doctor created kb/ automatically');
 
   const logsPath = path.join(__dirname, '..', 'logs');
-  log(ensureDir(logsPath, 'logs'), 'logs/ folder ready', 'logs/ folder missing');
+  log(ensureDir(logsPath, 'logs'), 'logs/ folder ready', 'logs/ folder missing', 'doctor created logs/ automatically');
 
   // file checks
-  log(checkExists(path.join(__dirname, '..', '.env')), '.env found', '.env missing');
+  log(checkExists(path.join(__dirname, '..', '.env')), '.env found', '.env missing', 'copy .env.example to .env and fill values');
   log(checkExists(path.join(__dirname, '..', 'server.js')), 'server.js found', 'server.js missing');
-  log(checkExists(path.join(__dirname, '..', 'knowledgebase_meili.json')), 'knowledgebase_meili.json found', 'knowledgebase_meili.json missing');
+  log(checkExists(path.join(__dirname, '..', 'knowledgebase_meili.json')), 'knowledgebase_meili.json found', 'knowledgebase_meili.json missing', 'provide knowledgebase_meili.json file');
   const mappingPath = process.env.KB_MAPPING_PATH || path.join(__dirname, '..', 'test_data', 'kb_search_mapping.json');
-  log(checkExists(mappingPath), `mapping file found (${mappingPath})`, `mapping file not found (${mappingPath})`);
+  log(checkExists(mappingPath), `mapping file found (${mappingPath})`, `mapping file not found (${mappingPath})`, 'check KB_MAPPING_PATH');
 
   // env validation
   const missing = requiredEnv.filter((k) => !process.env[k]);
-  if (missing.length === 0) {
-    console.log(chalk.green(`✅ env vars ok`));
-  } else {
-    allOk = false;
-    console.log(chalk.red(`❌ missing env vars: ${missing.join(', ')}`));
+  log(missing.length === 0, 'env vars ok', `missing env vars: ${missing.join(', ')}`, 'set them in .env');
+  if (process.env.JWT_SECRET === 'your-jwt-secret') {
+    warn('JWT_SECRET uses default value');
   }
 
   // meili connection
@@ -93,6 +94,7 @@ async function run() {
     allOk = false;
     logger.error(`Cannot connect to Meilisearch: ${err.message}`);
     console.log(chalk.red(`❌ Cannot connect to Meilisearch: ${err.message}`));
+    console.log(chalk.yellow('   → start Meilisearch and verify MEILI_HOST/MEILI_API_KEY'));
     return finish();
   }
 

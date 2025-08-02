@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const dotenv = require('dotenv');
 const dotenvResult = dotenv.config();
 if (dotenvResult.error) {
@@ -15,8 +16,6 @@ const toolCaller = require('./tools/call');
 const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
-const validateToken = require('./tools/validateToken');
-const logger = require('./logger');
 const { askAI } = require('./ai');
 const { spawn } = require('child_process');
 const { MeiliSearch } = require('meilisearch');
@@ -44,8 +43,10 @@ function sendSuccess(res, data) {
   res.json({ success: true, data, error: null });
 }
 
-function sendError(res, code, message) {
-  res.status(code).json({ success: false, data: null, error: message });
+function createError(code, message) {
+  const err = new Error(message);
+  err.status = code;
+  return err;
 }
 
 if (!process.env.JWT_SECRET) {
@@ -53,6 +54,35 @@ if (!process.env.JWT_SECRET) {
 }
 const JWT_SECRET = process.env.JWT_SECRET;
 const publicEndpoints = ['/search', '/tools/list', '/kb/search'];
+
+process.on('unhandledRejection', (reason) => {
+  logger.error(`Unhandled Rejection: ${reason}`);
+});
+process.on('uncaughtException', (err) => {
+  logger.error(`Uncaught Exception: ${err.stack || err.message}`);
+  process.exit(1);
+});
+
+function listEndpoints(app) {
+  const routes = [];
+  const router = app._router || app.router;
+  const stack = router && router.stack;
+  if (!stack) return routes;
+  stack.forEach((m) => {
+    if (m.route && m.route.path) {
+      const methods = Object.keys(m.route.methods).map((k) => k.toUpperCase());
+      methods.forEach((method) => routes.push({ method, path: m.route.path }));
+    } else if (m.name === 'router' && m.handle && m.handle.stack) {
+      m.handle.stack.forEach((h) => {
+        if (h.route) {
+          const methods = Object.keys(h.route.methods).map((k) => k.toUpperCase());
+          methods.forEach((method) => routes.push({ method, path: h.route.path }));
+        }
+      });
+    }
+  });
+  return routes;
+}
 
 const app = express();
 const jsonParser = express.json();
@@ -82,13 +112,13 @@ app.use((req, res, next) => {
 // Serve static files from the public directory
 app.use(express.static('public'));
 
-app.get('/healthz', async (req, res) => {
+app.get('/healthz', async (req, res, next) => {
   try {
     await checkMeiliConnection();
     sendSuccess(res, { status: 'ok' });
   } catch (err) {
     logger.error(`Health check failed: ${err.message}`);
-    sendError(res, 500, err.message);
+    next(createError(500, err.message));
   }
 });
 
@@ -121,12 +151,12 @@ function authenticateToken(req, res, next) {
   const authHeader = req.headers && req.headers['authorization'];
   if (!authHeader || typeof authHeader !== 'string') {
     logger.error('Missing Authorization header');
-    return sendError(res, 401, 'Unauthorized');
+    return next(createError(401, 'Unauthorized'));
   }
   const parts = authHeader.split(' ');
   if (parts.length !== 2 || parts[0] !== 'Bearer') {
     logger.error('Malformed Authorization header');
-    return sendError(res, 401, 'Unauthorized');
+    return next(createError(401, 'Unauthorized'));
   }
   const token = parts[1];
   try {
@@ -134,7 +164,7 @@ function authenticateToken(req, res, next) {
     next();
   } catch (err) {
     logger.error(`JWT error: ${err.message}`);
-    sendError(res, 401, 'Invalid token');
+    next(createError(401, 'Invalid token'));
   }
 }
 
@@ -157,7 +187,7 @@ app.post('/data', (req, res) => {
   app.get('/search', async (req, res, next) => {
     const { query } = req.query;
     if (typeof query !== 'string' || !query.trim()) {
-      return sendError(res, 400, 'parameter query wajib diisi');
+      return next(createError(400, 'parameter query wajib diisi'));
     }
     try {
       const results = await searchArticles(query);
@@ -171,10 +201,10 @@ app.post('/data', (req, res) => {
   app.get('/kb/search', async (req, res, next) => {
     const { query } = req.query;
     if (typeof query !== 'string' || !query.trim()) {
-      return sendError(res, 400, 'parameter query wajib diisi');
+      return next(createError(400, 'parameter query wajib diisi'));
     }
     try {
-      const results = await searchArticles(query);
+      const results = await findKBResults(query);
       sendSuccess(res, results);
     } catch (err) {
       logger.error(`kb search failed: ${err.message}`);
@@ -185,7 +215,7 @@ app.post('/data', (req, res) => {
   app.post('/tools/call', async (req, res, next) => {
   const { tool_name, params } = req.body || {};
   if (typeof tool_name !== 'string' || typeof params !== 'object' || params === null || Array.isArray(params)) {
-    return sendError(res, 400, 'tool_name harus string dan params harus objek');
+    return next(createError(400, 'tool_name harus string dan params harus objek'));
   }
 
     try {
@@ -193,7 +223,7 @@ app.post('/data', (req, res) => {
       sendSuccess(res, result);
     } catch (err) {
       if (err.message.includes('Tool tidak ditemukan')) {
-        return sendError(res, 404, err.message);
+        return next(createError(404, err.message));
       }
       logger.error(`tool call failed: ${err.message}`);
       next(err);
@@ -210,23 +240,23 @@ app.get('/tools/list', async (req, res) => {
   }
 });
 
-app.post('/ask', async (req, res) => {
+app.post('/ask', async (req, res, next) => {
   if (!req.body || typeof req.body.question !== 'string' || !req.body.question.trim()) {
-    return sendError(res, 400, 'Invalid request body');
+    return next(createError(400, 'Invalid request body'));
   }
   try {
     const result = await askAI(req.body.question);
     sendSuccess(res, result);
   } catch (err) {
     logger.error(`askAI failed: ${err.message}`);
-    sendError(res, 500, 'AI processing failed');
+    next(createError(500, 'AI processing failed'));
   }
 });
 
   app.post('/kb/query', async (req, res, next) => {
   const { query } = req.body || {};
   if (typeof query !== 'string' || query.trim().length < 3) {
-    return sendError(res, 400, 'query minimal 3 karakter');
+    return next(createError(400, 'query minimal 3 karakter'));
   }
     try {
       const results = await findKBResults(query);
@@ -237,9 +267,9 @@ app.post('/ask', async (req, res) => {
     }
   });
 
-app.post('/tools/plug-kb', (req, res) => {
+app.post('/tools/plug-kb', (req, res, next) => {
   if (!req.user || req.user.role !== 'admin') {
-    return sendError(res, 403, 'Forbidden');
+    return next(createError(403, 'Forbidden'));
   }
 
   const script = path.join(__dirname, 'tools', 'plug_kb_to_meili.js');
@@ -260,24 +290,32 @@ app.post('/tools/plug-kb', (req, res) => {
   });
 });
 
-// Error handling middleware for invalid JSON
-app.use((err, req, res, next) => {
-  if (err instanceof SyntaxError && 'body' in err) {
-    return sendError(res, 400, 'Invalid JSON');
-  }
-  next(err);
+app.get('/routes', (req, res) => {
+  res.json({ routes: listEndpoints(app) });
 });
 
-// Generic error handler to always return JSON
+// Centralized error handler
 app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && 'body' in err) {
+    err.status = 400;
+    err.message = 'Invalid JSON';
+  }
   logger.error(err.stack || err.message);
   const status = err.status || 500;
-  sendError(res, status, err.message || 'Internal Server Error');
+  res.status(status).json({ success: false, data: null, error: err.message || 'Internal Server Error' });
 });
 
 const PORT = process.env.PORT || 3000;
 if (require.main === module) {
   (async () => {
+    try {
+      await checkMeiliConnection();
+      logger.info('Connected to Meilisearch');
+    } catch (err) {
+      logger.error(`Cannot connect to Meilisearch: ${err.message}`);
+      process.exit(1);
+    }
+
     try {
       const client = new MeiliSearch({
         host: process.env.MEILI_HOST,
@@ -287,8 +325,12 @@ if (require.main === module) {
     } catch (err) {
       logger.warn('⚠️  Meili index "knowledgebase" not found. Run "npm run plug-kb" to create it.');
     }
+
     app.listen(PORT, () => {
       logger.info(`MCP Server started on port ${PORT}`);
+      const routes = listEndpoints(app);
+      logger.info('Available endpoints:');
+      routes.forEach((r) => logger.info(`${r.method} ${r.path}`));
     });
   })();
 }
