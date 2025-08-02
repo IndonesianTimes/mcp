@@ -10,6 +10,13 @@ Server ini dirancang untuk developer AI, tim operasi, dan prompt engineer yang
 membutuhkan API fleksibel untuk query basis pengetahuan, pemanggilan tools,
 serta bertanya ke LLM secara langsung.
 
+## Architecture
+```
+[Client] -> [Express API] -> [Tools Modules]
+                     ├-> [Meilisearch]
+                     └-> [LLM Backend (OpenAI/local)]
+```
+
 ## Features
 - Knowledge Base (KB) berbasis mapping file
 - Integrasi KB ke Meilisearch
@@ -19,7 +26,7 @@ serta bertanya ke LLM secara langsung.
 - Dokter sistem `npm run doctor`
 - Auto healthcheck melalui `/healthz` dan `/status`
 - Endpoint diagnosa `/routes` menampilkan semua endpoint aktif
-- Pemeriksaan koneksi Meilisearch saat startup (server tidak jalan jika gagal)
+- Mode "degraded" – server tetap berjalan meski Meilisearch mati
 
 ## Directory Structure
 ```text
@@ -47,7 +54,8 @@ serta bertanya ke LLM secara langsung.
    PORT=3000
    MEILI_HOST=http://localhost:7700
    MEILI_API_KEY=masterKey
-   OPENAI_API_KEY=sk-xxx
+   LLM_BACKEND=local # atau openai
+   OPENAI_API_KEY= # wajib jika LLM_BACKEND=openai
    JWT_SECRET=your-jwt-secret
    ```
 3. **Jalankan dokter sistem**
@@ -58,7 +66,13 @@ serta bertanya ke LLM secara langsung.
    ```bash
    npm start
    ```
-   Server akan memeriksa koneksi ke Meilisearch sebelum memulai.
+   Server akan tetap hidup walau Meilisearch belum siap.
+
+5. **Generate token admin**
+   ```bash
+   node genToken.js
+   # atau gunakan endpoint POST /admin/generate-token
+   ```
 
 ## Usage
 - `GET /kb/search?query=...` – pencarian KB di Meilisearch
@@ -89,17 +103,21 @@ Pastikan Meilisearch telah berjalan dan variabel lingkungan sudah benar.
 - `npm start` – menjalankan server
 - `npm run doctor` – memeriksa konfigurasi dan koneksi
 - `npm run plug-kb` – mengindeks KB JSON ke Meilisearch
+- `./test.sh <query>` – tes cepat endpoint `/kb/search`
 - `npm test` – menjalankan unit test
 
 ## API Reference
 | Method | Path | Deskripsi |
 | ------ | ---- | --------- |
-| `GET`  | `/search` | Pencarian artikel di Meili (`query` parameter) |
-| `GET`  | `/healthz` | Healthcheck sederhana |
-| `GET`  | `/status` | Informasi server & koneksi |
+| `GET`  | `/search` | Pencarian artikel di Meili (`query` parameter, 503 saat Meili mati) |
+| `GET`  | `/healthz` | Healthcheck sederhana (status ok/degraded) |
+| `GET`  | `/status` | Informasi server & koneksi (+dashboard HTML) |
 | `GET`  | `/routes` | Daftar semua endpoint aktif |
+| `GET`  | `/metrics` | Prometheus metrics |
 | `POST` | `/articles` | Tambah artikel ke Meili |
 | `POST` | `/tools/call` | Eksekusi tool terdaftar |
+| `POST` | `/tools/reload` | Reload daftar tools (admin only) |
+| `POST` | `/admin/generate-token` | Hasilkan JWT (admin only) |
 | `GET`  | `/tools/list` | Daftar tool yang tersedia |
 Menampilkan array `tools` berisi metadata setiap modul. Contoh:
 ```json
@@ -124,6 +142,48 @@ Menampilkan array `tools` berisi metadata setiap modul. Contoh:
 
 Semua endpoint kecuali `/search` dan `/tools/list` memerlukan Bearer token JWT.
 Ganti nilai `JWT_SECRET` pada `.env` jika masih menggunakan default.
+
+## Deployment Examples
+
+### docker-compose
+```yaml
+version: '3'
+services:
+  mcp:
+    build: .
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      MEILI_HOST: http://meilisearch:7700
+      LLM_BACKEND: local
+      API_KEY: masterKey
+    depends_on:
+      - meilisearch
+  meilisearch:
+    image: getmeili/meilisearch:v1.7
+    restart: always
+    ports:
+      - "7700:7700"
+    environment:
+      MEILI_MASTER_KEY: masterKey
+```
+
+### systemd
+```ini
+[Unit]
+Description=MCP Server
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/mcp
+ExecStart=/usr/bin/node server.js
+Restart=always
+EnvironmentFile=/opt/mcp/.env
+
+[Install]
+WantedBy=multi-user.target
+```
 
 ## Troubleshooting
 - **.env tidak ditemukan** – salin dari `.env.example` lalu jalankan `npm run doctor`.

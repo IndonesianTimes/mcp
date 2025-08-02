@@ -2,8 +2,8 @@ process.env.APP_MODE = 'test';
 process.env.PORT = '3000';
 process.env.MEILI_HOST = 'http://localhost:7700';
 process.env.MEILI_API_KEY = 'masterKey';
-process.env.OPENAI_API_KEY = 'test';
 process.env.JWT_SECRET = 'secret';
+process.env.LLM_BACKEND = 'local';
 
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
@@ -78,11 +78,12 @@ describe('API endpoints', () => {
     }
   });
 
-  test('/search returns JSON', async () => {
+  test('/search returns service unavailable when Meili down', async () => {
     const res = await request(app)
       .get('/search')
       .query({ query: 'random' });
-    expect(typeof res.body).toBe('object');
+    expect(res.status).toBe(503);
+    expect(res.body.success).toBe(false);
   });
 
   test('/ask rejects empty question', async () => {
@@ -131,6 +132,33 @@ describe('API endpoints', () => {
       .set('Authorization', `Bearer ${adminToken}`);
     expect(res.status).toBe(200);
     expect(res.text).toMatch(/Process exited/);
+  });
+
+  test('/admin/generate-token returns token', async () => {
+    const adminToken = jwt.sign({ userId: 2, role: 'admin' }, 'secret');
+    const res = await request(app)
+      .post('/admin/generate-token')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ username: 'u', role: 'user' });
+    expect(res.status).toBe(200);
+    expect(res.body.data).toHaveProperty('token');
+  });
+
+  test('/tools/reload works for admin', async () => {
+    const adminToken = jwt.sign({ userId: 2, role: 'admin' }, 'secret');
+    const res = await request(app)
+      .post('/tools/reload')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.data.reloaded).toBe(true);
+  });
+
+  test('/metrics returns text', async () => {
+    const res = await request(app)
+      .get('/metrics')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(typeof res.text).toBe('string');
   });
 
   test('/healthz returns JSON', async () => {

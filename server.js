@@ -19,15 +19,27 @@ const jwt = require('jsonwebtoken');
 const { askAI } = require('./ai');
 const { spawn } = require('child_process');
 const { MeiliSearch } = require('meilisearch');
+const clientMetrics = require('prom-client');
+
+const metricsRegister = new clientMetrics.Registry();
+clientMetrics.collectDefaultMetrics({ register: metricsRegister });
+const httpCounter = new clientMetrics.Counter({
+  name: 'http_requests_total',
+  help: 'Total HTTP requests',
+  labelNames: ['method', 'route', 'status'],
+});
+metricsRegister.registerMetric(httpCounter);
 
 const requiredEnv = [
   'APP_MODE',
   'PORT',
   'MEILI_HOST',
   'MEILI_API_KEY',
-  'OPENAI_API_KEY',
   'JWT_SECRET',
 ];
+if ((process.env.LLM_BACKEND || 'local') === 'openai') {
+  requiredEnv.push('OPENAI_API_KEY');
+}
 const missingEnv = requiredEnv.filter((v) => !process.env[v]);
 if (missingEnv.length) {
   logger.error(`Missing environment variables: ${missingEnv.join(', ')}`);
@@ -36,6 +48,10 @@ if (missingEnv.length) {
 }
 
 if (!process.env.JWT_SECRET || !process.env.JWT_SECRET.trim() || process.env.JWT_SECRET === 'your-jwt-secret') {
+  if (process.env.APP_MODE === 'production') {
+    logger.error('JWT_SECRET must be set to a custom value in production');
+    process.exit(1);
+  }
   logger.warn('⚠️  JWT_SECRET is empty or using default value');
 }
 
@@ -106,20 +122,20 @@ app.use((req, res, next) => {
 // Log each incoming request after body parsing
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.originalUrl}`);
+  res.on('finish', () => {
+    const route = req.route ? req.route.path : req.path;
+    httpCounter.inc({ method: req.method, route, status: res.statusCode });
+  });
   next();
 });
 
 // Serve static files from the public directory
 app.use(express.static('public'));
 
-app.get('/healthz', async (req, res, next) => {
-  try {
-    await checkMeiliConnection();
-    sendSuccess(res, { status: 'ok' });
-  } catch (err) {
-    logger.error(`Health check failed: ${err.message}`);
-    next(createError(500, err.message));
-  }
+app.get('/healthz', async (req, res) => {
+  const meili = await isMeiliConnected();
+  const status = meili ? 'ok' : 'degraded';
+  sendSuccess(res, { status, meilisearch: meili ? 'connected' : 'disconnected' });
 });
 
 function formatUptime(ms) {
@@ -134,12 +150,17 @@ app.get('/status', async (req, res) => {
   const meili = (await isMeiliConnected()) ? 'connected' : 'disconnected';
   const llm = process.env.LLM_BACKEND === 'openai' ? 'openai' : 'local';
   const uptimeMs = Date.now() - (Date.now() - process.uptime() * 1000);
-  sendSuccess(res, {
+  const data = {
     server: 'ok',
     meilisearch: meili,
     llm,
     uptime: formatUptime(uptimeMs),
-  });
+  };
+  if ((req.headers.accept || '').includes('text/html')) {
+    res.send(`<!DOCTYPE html><html><body><h1>MCP Status</h1><ul><li>Server: ${data.server}</li><li>Meilisearch: ${data.meilisearch}</li><li>LLM: ${data.llm}</li><li>Uptime: ${data.uptime}</li></ul></body></html>`);
+  } else {
+    sendSuccess(res, data);
+  }
 });
 
 // Bearer token authentication
@@ -176,6 +197,9 @@ app.post('/data', (req, res) => {
 
   app.post('/articles', async (req, res, next) => {
     try {
+      if (!(await isMeiliConnected())) {
+        return next(createError(503, 'Meilisearch unavailable'));
+      }
       const result = await indexArticle(req.body);
       sendSuccess(res, { indexed: result });
     } catch (err) {
@@ -190,6 +214,9 @@ app.post('/data', (req, res) => {
       return next(createError(400, 'parameter query wajib diisi'));
     }
     try {
+      if (!(await isMeiliConnected())) {
+        return next(createError(503, 'Meilisearch unavailable'));
+      }
       const results = await searchArticles(query);
       sendSuccess(res, results);
     } catch (err) {
@@ -212,23 +239,40 @@ app.post('/data', (req, res) => {
     }
   });
 
-  app.post('/tools/call', async (req, res, next) => {
+app.post('/tools/call', async (req, res, next) => {
   const { tool_name, params } = req.body || {};
   if (typeof tool_name !== 'string' || typeof params !== 'object' || params === null || Array.isArray(params)) {
     return next(createError(400, 'tool_name harus string dan params harus objek'));
   }
 
-    try {
-      const result = await toolCaller.callTool(tool_name, params);
-      sendSuccess(res, result);
-    } catch (err) {
-      if (err.message.includes('Tool tidak ditemukan')) {
-        return next(createError(404, err.message));
-      }
-      logger.error(`tool call failed: ${err.message}`);
-      next(err);
+  try {
+    const result = await toolCaller.callTool(tool_name, params, { timeout: 15000, maxOutputLength: 10000 });
+    sendSuccess(res, result);
+  } catch (err) {
+    if (err.message.includes('Tool tidak ditemukan')) {
+      return next(createError(404, err.message));
     }
-  });
+    logger.error(`tool call failed: ${err.message}`);
+    next(err);
+  }
+});
+
+app.post('/tools/reload', (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return next(createError(403, 'Forbidden'));
+  }
+  toolCaller.loadTools();
+  sendSuccess(res, { reloaded: true });
+});
+
+app.post('/admin/generate-token', (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return next(createError(403, 'Forbidden'));
+  }
+  const { username = 'user', role = 'user', expiresIn = '7d' } = req.body || {};
+  const token = jwt.sign({ username, role }, JWT_SECRET, { expiresIn });
+  sendSuccess(res, { token });
+});
 
 app.get('/tools/list', async (req, res) => {
   try {
@@ -294,6 +338,11 @@ app.get('/routes', (req, res) => {
   res.json({ routes: listEndpoints(app) });
 });
 
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', metricsRegister.contentType);
+  res.end(await metricsRegister.metrics());
+});
+
 // Centralized error handler
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && 'body' in err) {
@@ -312,8 +361,7 @@ if (require.main === module) {
       await checkMeiliConnection();
       logger.info('Connected to Meilisearch');
     } catch (err) {
-      logger.error(`Cannot connect to Meilisearch: ${err.message}`);
-      process.exit(1);
+      logger.warn(`Starting without Meilisearch: ${err.message}`);
     }
 
     try {
