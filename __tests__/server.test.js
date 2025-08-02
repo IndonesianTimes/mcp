@@ -144,10 +144,10 @@ describe('API endpoints', () => {
     expect(res.body.data).toHaveProperty('token');
   });
 
-  test('/tools/reload works for admin', async () => {
+  test('/admin/reload-tools works for admin', async () => {
     const adminToken = jwt.sign({ userId: 2, role: 'admin' }, 'secret');
     const res = await request(app)
-      .post('/tools/reload')
+      .post('/admin/reload-tools')
       .set('Authorization', `Bearer ${adminToken}`);
     expect(res.status).toBe(200);
     expect(res.body.data.reloaded).toBe(true);

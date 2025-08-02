@@ -27,6 +27,7 @@ serta bertanya ke LLM secara langsung.
 - Auto healthcheck melalui `/healthz` dan `/status`
 - Endpoint diagnosa `/routes` menampilkan semua endpoint aktif
 - Mode "degraded" – server tetap berjalan meski Meilisearch mati
+- Rate limiting bawaan untuk mencegah abuse
 
 ## Directory Structure
 ```text
@@ -116,7 +117,7 @@ Pastikan Meilisearch telah berjalan dan variabel lingkungan sudah benar.
 | `GET`  | `/metrics` | Prometheus metrics |
 | `POST` | `/articles` | Tambah artikel ke Meili |
 | `POST` | `/tools/call` | Eksekusi tool terdaftar |
-| `POST` | `/tools/reload` | Reload daftar tools (admin only) |
+| `POST` | `/admin/reload-tools` | Reload daftar tools (admin only) |
 | `POST` | `/admin/generate-token` | Hasilkan JWT (admin only) |
 | `GET`  | `/tools/list` | Daftar tool yang tersedia |
 Menampilkan array `tools` berisi metadata setiap modul. Contoh:
