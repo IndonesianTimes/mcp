@@ -48,6 +48,10 @@ if (missingEnv.length) {
   process.exit(1);
 }
 
+if (!process.env.API_KEY) {
+  logger.warn('⚠️  API_KEY is not set; falling back to MEILI_API_KEY');
+}
+
 if (!process.env.JWT_SECRET || !process.env.JWT_SECRET.trim() || process.env.JWT_SECRET === 'your-jwt-secret') {
   if (process.env.APP_MODE === 'production') {
     logger.error('JWT_SECRET must be set to a custom value in production');
@@ -159,7 +163,8 @@ function formatUptime(ms) {
 app.get('/status', async (req, res) => {
   const meili = (await isMeiliConnected()) ? 'connected' : 'disconnected';
   const llm = process.env.LLM_BACKEND === 'openai' ? 'openai' : 'local';
-  const uptimeMs = Date.now() - (Date.now() - process.uptime() * 1000);
+  // use process.uptime for clarity
+  const uptimeMs = process.uptime() * 1000;
   const data = {
     server: 'ok',
     meilisearch: meili,
@@ -206,13 +211,20 @@ app.post('/data', (req, res) => {
 });
 
   app.post('/articles', async (req, res, next) => {
+    const body = req.body;
+    if (typeof body !== 'object' || body === null) {
+      return next(createError(400, 'Invalid article data'));
+    }
     try {
       if (!(await isMeiliConnected())) {
         return next(createError(503, 'Meilisearch unavailable'));
       }
-      const result = await indexArticle(req.body);
+      const result = await indexArticle(body);
       sendSuccess(res, { indexed: result });
     } catch (err) {
+      if (err.message && err.message.includes('Validasi')) {
+        return next(createError(400, err.message));
+      }
       logger.error(`indexArticle failed: ${err.message}`);
       next(err);
     }
@@ -279,8 +291,18 @@ app.post('/admin/generate-token', (req, res, next) => {
   if (!req.user || req.user.role !== 'admin') {
     return next(createError(403, 'Forbidden'));
   }
-  const { username = 'user', role = 'user', expiresIn = '7d' } = req.body || {};
-  const token = jwt.sign({ username, role }, JWT_SECRET, { expiresIn });
+  let { username = 'user', role = 'user', expiresIn = 7 * 24 * 60 * 60 * 1000 } = req.body || {};
+  if (typeof expiresIn === 'string') {
+    if (/^\d+$/.test(expiresIn)) {
+      expiresIn = parseInt(expiresIn, 10);
+    } else {
+      return next(createError(400, 'expiresIn must be integer milliseconds'));
+    }
+  }
+  if (typeof expiresIn !== 'number' || !Number.isFinite(expiresIn) || expiresIn <= 0) {
+    return next(createError(400, 'expiresIn must be integer milliseconds'));
+  }
+  const token = jwt.sign({ username, role }, JWT_SECRET, { expiresIn: Math.floor(expiresIn / 1000) });
   sendSuccess(res, { token });
 });
 
@@ -339,6 +361,11 @@ app.post('/tools/plug-kb', (req, res, next) => {
     res.write(data);
   });
 
+  child.on('error', (err) => {
+    logger.error(`plug-kb spawn error: ${err.message}`);
+    res.status(500).end(`Process error: ${err.message}`);
+  });
+
   child.on('close', (code) => {
     res.end(`\nProcess exited with code ${code}`);
   });
@@ -348,9 +375,14 @@ app.get('/routes', (req, res) => {
   res.json({ routes: listEndpoints(app) });
 });
 
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', metricsRegister.contentType);
-  res.end(await metricsRegister.metrics());
+app.get('/metrics', async (req, res, next) => {
+  try {
+    res.set('Content-Type', metricsRegister.contentType);
+    res.end(await metricsRegister.metrics());
+  } catch (err) {
+    logger.error(`metrics failed: ${err.message}`);
+    next(createError(500, 'Failed to collect metrics'));
+  }
 });
 
 // Centralized error handler

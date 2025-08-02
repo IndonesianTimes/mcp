@@ -22,7 +22,12 @@ async function loadKBFromMapping(mappingPath) {
   let mappingData;
   try {
     const raw = await fs.promises.readFile(mappingPath, 'utf8');
-    mappingData = JSON.parse(raw);
+    try {
+      mappingData = JSON.parse(raw);
+    } catch (err) {
+      logger.error(`Invalid JSON in mapping file ${mappingPath}: ${err.message}`);
+      throw new Error(`invalid JSON in mapping file: ${mappingPath}`);
+    }
   } catch (err) {
     logger.error(`Failed to read mapping: ${err.message}`);
     if (err.code === 'ENOENT') {
@@ -61,7 +66,12 @@ async function loadKBFromMapping(mappingPath) {
       }
       throw err;
     }
-    lookup[path.basename(rel)] = JSON.parse(content);
+    try {
+      lookup[path.basename(rel)] = JSON.parse(content);
+    } catch (err) {
+      logger.error(`Invalid JSON in KB file ${filePath}: ${err.message}`);
+      throw new Error(`invalid JSON in file: ${filePath}`);
+    }
   }
 
   mappingCache.set(mappingPath, lookup);
@@ -94,7 +104,12 @@ async function findKBResults(query) {
   let mappingData;
   try {
     const raw = await fs.promises.readFile(mappingPath, 'utf8');
-    mappingData = JSON.parse(raw);
+    try {
+      mappingData = JSON.parse(raw);
+    } catch (err) {
+      logger.error(`Invalid JSON in mapping file ${mappingPath}: ${err.message}`);
+      throw new Error(`invalid JSON in mapping file: ${mappingPath}`);
+    }
   } catch (err) {
     logger.error(`Failed to read mapping: ${err.message}`);
     if (err.code === 'ENOENT') {
@@ -140,7 +155,13 @@ async function findKBResults(query) {
       }
       throw err;
     }
-    const data = JSON.parse(content);
+    let data;
+    try {
+      data = JSON.parse(content);
+    } catch (err) {
+      logger.error(`Invalid JSON in KB file ${filePath}: ${err.message}`);
+      throw new Error(`invalid JSON in file: ${filePath}`);
+    }
     if (Array.isArray(data)) {
       results.push(...data);
     }

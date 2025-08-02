@@ -49,7 +49,7 @@ function ensureDir(p, name) {
       fs.mkdirSync(p, { recursive: true });
       console.log(chalk.yellow(`Created missing ${name}/ folder`));
     } catch (err) {
-      log(false, `${name}/ folder missing and failed to create: ${err.message}`);
+      logger.error(`${name}/ folder missing and failed to create: ${err.message}`);
       return false;
     }
   }
@@ -58,6 +58,10 @@ function ensureDir(p, name) {
 
 async function run() {
   console.log(chalk.cyan.bold('MCP Doctor Running...'));
+
+  if (!process.env.API_KEY) {
+    warn('API_KEY not set; falling back to MEILI_API_KEY');
+  }
 
   // folder checks
   log(checkExists(path.join(__dirname, '..', 'public'), true), 'public/ folder found', 'public/ folder missing', 'create public/ folder');
