@@ -18,6 +18,8 @@ serta bertanya ke LLM secara langsung.
 - Upload KB JSON ke Meili dengan `npm run plug-kb`
 - Dokter sistem `npm run doctor`
 - Auto healthcheck melalui `/healthz` dan `/status`
+- Endpoint diagnosa `/routes` menampilkan semua endpoint aktif
+- Pemeriksaan koneksi Meilisearch saat startup (server tidak jalan jika gagal)
 
 ## Directory Structure
 ```text
@@ -56,9 +58,11 @@ serta bertanya ke LLM secara langsung.
    ```bash
    npm start
    ```
+   Server akan memeriksa koneksi ke Meilisearch sebelum memulai.
 
 ## Usage
 - `GET /kb/search?query=...` – pencarian KB di Meilisearch
+- `GET /routes` – daftar endpoint aktif (butuh token)
 - `POST /kb/query` – pencarian KB lokal berbasis mapping
 - `POST /ask` – bertanya ke LLM
 - `POST /tools/call` – menjalankan tool terdaftar
@@ -93,6 +97,7 @@ Pastikan Meilisearch telah berjalan dan variabel lingkungan sudah benar.
 | `GET`  | `/search` | Pencarian artikel di Meili (`query` parameter) |
 | `GET`  | `/healthz` | Healthcheck sederhana |
 | `GET`  | `/status` | Informasi server & koneksi |
+| `GET`  | `/routes` | Daftar semua endpoint aktif |
 | `POST` | `/articles` | Tambah artikel ke Meili |
 | `POST` | `/tools/call` | Eksekusi tool terdaftar |
 | `GET`  | `/tools/list` | Daftar tool yang tersedia |
@@ -118,6 +123,7 @@ Menampilkan array `tools` berisi metadata setiap modul. Contoh:
 | `POST` | `/ask` | Bertanya ke LLM |
 
 Semua endpoint kecuali `/search` dan `/tools/list` memerlukan Bearer token JWT.
+Ganti nilai `JWT_SECRET` pada `.env` jika masih menggunakan default.
 
 ## Troubleshooting
 - **.env tidak ditemukan** – salin dari `.env.example` lalu jalankan `npm run doctor`.

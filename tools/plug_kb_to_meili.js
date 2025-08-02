@@ -34,14 +34,38 @@ async function main() {
     apiKey: process.env.API_KEY || process.env.MEILI_API_KEY || '',
   });
 
-  let index = await client
-    .getIndex('knowledgebase')
-    .catch(() => client.createIndex('knowledgebase', { primaryKey: 'id' }));
+  try {
+    await client.health();
+  } catch (err) {
+    logger.error(`Cannot connect to Meilisearch: ${err.message}`);
+    process.exit(1);
+  }
 
-  await index.updateSettings({
-    searchableAttributes: ['name', 'tags', 'pola_main', 'jam_gacor'],
-    filterableAttributes: ['provider', 'category', 'status'],
-  });
+  let index;
+  try {
+    index = await client.getIndex('knowledgebase');
+  } catch {
+    logger.warn('knowledgebase index not found, creating...');
+    index = await client.createIndex('knowledgebase', { primaryKey: 'id' });
+  }
+
+  if (typeof index.updateSettings === 'function') {
+    try {
+      await index.updateSettings({
+        searchableAttributes: ['name', 'tags', 'pola_main', 'jam_gacor'],
+        filterableAttributes: ['provider', 'category', 'status'],
+      });
+    } catch (err) {
+      logger.warn(`updateSettings failed: ${err.message}`);
+    }
+  } else {
+    logger.warn('updateSettings is not available on this Meilisearch instance');
+  }
+
+  if (typeof index.addDocuments !== 'function') {
+    logger.error('addDocuments is not supported by this Meilisearch index');
+    process.exit(1);
+  }
 
   try {
     const enqueued = await index.addDocuments(docs);

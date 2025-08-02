@@ -16,7 +16,12 @@ function loadTools() {
     const name = path.basename(file, '.js');
     // delete from require cache to allow reload
     delete require.cache[require.resolve(path.join(modulesDir, file))];
-    tools[name] = require(path.join(modulesDir, file));
+    const mod = require(path.join(modulesDir, file));
+    if (typeof mod !== 'function') {
+      logger.warn(`Tool ${name} does not export a function; skipped`);
+      continue;
+    }
+    tools[name] = mod;
   }
 }
 
