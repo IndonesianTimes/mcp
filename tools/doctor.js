@@ -10,9 +10,11 @@ const requiredEnv = [
   'PORT',
   'MEILI_HOST',
   'MEILI_API_KEY',
-  'OPENAI_API_KEY',
   'JWT_SECRET',
 ];
+if ((process.env.LLM_BACKEND || 'local') === 'openai') {
+  requiredEnv.push('OPENAI_API_KEY');
+}
 
 let allOk = true;
 
@@ -130,6 +132,7 @@ function finish() {
     console.log(chalk.green.bold('All checks passed!'));
     process.exit(0);
   } else {
+    process.stdout.write('\u0007');
     console.log(chalk.red.bold('Some checks failed.'));
     process.exit(1);
   }

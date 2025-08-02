@@ -32,11 +32,21 @@ function getTool(name) {
   return tools[name];
 }
 
-async function callTool(name, params) {
+async function callTool(name, params, options = {}) {
+  const { timeout = 10000, maxOutputLength = 10000 } = options;
   logger.info(`Executing tool: ${name}`);
   const fn = getTool(name);
   try {
-    const result = await fn(params);
+    const result = await Promise.race([
+      Promise.resolve(fn(params)),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error(`Tool ${name} timeout after ${timeout}ms`)), timeout)
+      ),
+    ]);
+    const str = JSON.stringify(result);
+    if (str.length > maxOutputLength) {
+      throw new Error(`Tool ${name} output exceeds ${maxOutputLength} characters`);
+    }
     logger.info(`Tool ${name} succeeded`);
     return result;
   } catch (err) {
