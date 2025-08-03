@@ -5,6 +5,34 @@ process.env.MEILI_API_KEY = 'masterKey';
 process.env.JWT_SECRET = 'secret';
 process.env.LLM_BACKEND = 'local';
 
+// Mock MeiliSearch client so tests don't require a real Meili instance
+jest.mock('meilisearch', () => {
+  return {
+    MeiliSearch: jest.fn().mockImplementation(() => ({
+      index: () => ({
+        search: jest.fn().mockResolvedValue({ hits: [{ id: '1', name: 'alpha' }] }),
+      }),
+    })),
+  };
+});
+
+// Mock search helpers to control Meili connection state in tests
+jest.mock('../search', () => {
+  return {
+    indexArticle: jest.fn().mockImplementation((data) => {
+      if (!data.id) {
+        throw new Error('Validasi gagal: id harus diisi');
+      }
+      return Promise.resolve({});
+    }),
+    searchArticles: jest.fn().mockResolvedValue([]),
+    checkMeiliConnection: jest.fn(),
+    isMeiliConnected: jest.fn().mockResolvedValue(false),
+  };
+});
+
+const { isMeiliConnected } = require('../search');
+
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const path = require('path');
@@ -24,6 +52,8 @@ describe('API endpoints', () => {
   });
 
   test('/articles rejects empty id', async () => {
+    // Simulate Meili available so validation runs
+    isMeiliConnected.mockResolvedValueOnce(true);
     const res = await request(app)
       .post('/articles')
       .set('Authorization', `Bearer ${token}`)
@@ -79,6 +109,7 @@ describe('API endpoints', () => {
   });
 
   test('/search returns service unavailable when Meili down', async () => {
+    // Default mocked isMeiliConnected is false
     const res = await request(app)
       .get('/search')
       .query({ query: 'random' });
