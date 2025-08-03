@@ -121,7 +121,8 @@ function listEndpoints(app) {
 }
 
 const app = express();
-const jsonParser = express.json();
+// Ensure body parser is active before all routes
+app.use(express.json());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -131,22 +132,6 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-
-// Wrap express.json in try/catch to handle mis-parsed JSON
-app.use((req, res, next) => {
-  try {
-    jsonParser(req, res, (err) => {
-      if (err) {
-        logger.error(`JSON parse error on ${req.method} ${req.originalUrl}: ${err.message}`);
-        return next(err);
-      }
-      next();
-    });
-  } catch (err) {
-    logger.error(`JSON parse exception on ${req.method} ${req.originalUrl}: ${err.message}`);
-    next(err);
-  }
-});
 
 // Log each incoming request after body parsing
 app.use((req, res, next) => {
@@ -349,7 +334,8 @@ app.post('/ask', async (req, res, next) => {
 app.post('/kb/query', async (req, res, next) => {
   const { query } = req.body || {};
   const cleaned = typeof query === 'string' ? query.trim() : '';
-  logger.info(`[KB/QUERY] ${cleaned}`); // Log query masuk
+  console.log('[KB/QUERY]', cleaned);
+  logger.info(`[KB/QUERY] ${cleaned}`);
   if (cleaned.length < 3) {
     return next(createError(400, 'query minimal 3 karakter'));
   }
@@ -359,11 +345,14 @@ app.post('/kb/query', async (req, res, next) => {
     }
     const index = meiliClient.index('knowledgebase');
     const result = await index.search(cleaned, { limit: 10 });
-    logger.debug(`[MEILI RESULT] ${JSON.stringify(result.hits)}`); // Log hasil dari Meili
+    console.log('[MEILI RESULT]', result);
+    console.log('[MEILI HITS]', result.hits);
+    logger.debug(`[MEILI RESULT] ${JSON.stringify(result.hits)}`);
     logger.debug(`kb/query hits: ${result.hits.length}`);
-    sendSuccess(res, result.hits); // Relay hits langsung ke client
+    sendSuccess(res, result.hits);
   } catch (err) {
-    logger.error(`[MEILI ERROR] ${err.message}`); // Debug error jika query gagal
+    console.log('[MEILI ERROR]', err);
+    logger.error(`[MEILI ERROR] ${err.message}`);
     logger.error(`kb query failed: ${err.message}`);
     next(createError(err.status || 500, err.message || 'Meilisearch query failed'));
   }
