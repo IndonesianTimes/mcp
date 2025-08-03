@@ -354,6 +354,9 @@ app.post('/kb/query', async (req, res, next) => {
     return next(createError(400, 'query minimal 3 karakter'));
   }
   try {
+    if (!(await isMeiliConnected())) {
+      return next(createError(503, 'Meilisearch unavailable'));
+    }
     const index = meiliClient.index('knowledgebase');
     const result = await index.search(cleaned, { limit: 10 });
     logger.debug(`[MEILI RESULT] ${JSON.stringify(result.hits)}`); // Log hasil dari Meili
@@ -362,7 +365,7 @@ app.post('/kb/query', async (req, res, next) => {
   } catch (err) {
     logger.error(`[MEILI ERROR] ${err.message}`); // Debug error jika query gagal
     logger.error(`kb query failed: ${err.message}`);
-    next(err);
+    next(createError(err.status || 500, err.message || 'Meilisearch query failed'));
   }
 });
 
