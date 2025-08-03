@@ -11,22 +11,40 @@ const client = new MeiliSearch({
   apiKey: process.env.API_KEY || process.env.MEILI_API_KEY || '',
 });
 
-let indexPromise;
+let knowledgeIndex;
 
+/**
+ * Retrieve the knowledgebase index, creating it if necessary. The result is
+ * cached only on success so that a failed connection does not permanently
+ * poison future calls.
+ */
 async function getKnowledgeIndex() {
-  if (!indexPromise) {
-    indexPromise = client
-      .getIndex('knowledgebase')
-      .catch(() => client.createIndex('knowledgebase', { primaryKey: 'id' }));
-    indexPromise = indexPromise.then(async (idx) => {
-      await idx.updateSettings({
-        searchableAttributes: ['title', 'content', 'tags', 'category', 'author'],
-        filterableAttributes: ['tags', 'category', 'author', 'createdAt'],
-      });
-      return idx;
-    });
+  if (knowledgeIndex) {
+    return knowledgeIndex;
   }
-  return indexPromise;
+
+  try {
+    knowledgeIndex = await client.getIndex('knowledgebase');
+  } catch (err) {
+    try {
+      knowledgeIndex = await client.createIndex('knowledgebase', { primaryKey: 'id' });
+    } catch (createErr) {
+      logger.error(`Failed to init Meilisearch index: ${createErr.message}`);
+      knowledgeIndex = undefined;
+      throw createErr;
+    }
+  }
+
+  try {
+    await knowledgeIndex.updateSettings({
+      searchableAttributes: ['title', 'content', 'tags', 'category', 'author'],
+      filterableAttributes: ['tags', 'category', 'author', 'createdAt'],
+    });
+  } catch (settingsErr) {
+    logger.warn(`Failed to update Meilisearch settings: ${settingsErr.message}`);
+  }
+
+  return knowledgeIndex;
 }
 
 /**
@@ -54,6 +72,9 @@ async function indexArticle(data) {
   try {
     return await index.addDocuments([article]);
   } catch (err) {
+    if (err && err.errorCode === 'index_not_found') {
+      knowledgeIndex = undefined;
+    }
     logger.error(`Gagal mengirim ke mesin pencarian: ${err.message}`);
     throw new Error(`Gagal mengirim ke mesin pencarian: ${err.message}`);
   }
@@ -87,6 +108,9 @@ async function searchArticles(query) {
       snippet: (h._formatted && h._formatted.content) || h.content
     }));
   } catch (err) {
+    if (err && err.errorCode === 'index_not_found') {
+      knowledgeIndex = undefined;
+    }
     logger.error(`Search failed: ${err.message}`);
     throw new Error(`Gagal melakukan pencarian: ${err.message}`);
   }

@@ -30,8 +30,13 @@ const meiliClient = new MeiliSearch({
 });
 
 // Debug log so we can verify the server is using the expected Meili instance
-console.log('[ENV] MEILI_HOST:', process.env.MEILI_HOST);
-console.log('[ENV] MEILI_API_KEY:', MEILI_API_KEY);
+// Avoid printing the full API key to prevent leaking credentials
+logger.info(`[ENV] MEILI_HOST: ${process.env.MEILI_HOST}`);
+if (MEILI_API_KEY) {
+  logger.info('[ENV] MEILI_API_KEY is set');
+} else {
+  logger.warn('[ENV] MEILI_API_KEY is missing or empty');
+}
 const metricsRegister = new clientMetrics.Registry();
 clientMetrics.collectDefaultMetrics({ register: metricsRegister });
 const httpCounter = new clientMetrics.Counter({
@@ -190,7 +195,9 @@ app.get('/status', async (req, res) => {
 
 // Bearer token authentication
 function authenticateToken(req, res, next) {
-  if (publicEndpoints.includes(req.path)) {
+  // Normalise path to handle optional trailing slashes
+  const normalizedPath = req.path.replace(/\/+$/, '') || '/';
+  if (publicEndpoints.includes(normalizedPath)) {
     return next();
   }
 
@@ -342,20 +349,23 @@ app.post('/ask', async (req, res, next) => {
 app.post('/kb/query', async (req, res, next) => {
   const { query } = req.body || {};
   const cleaned = typeof query === 'string' ? query.trim() : '';
-  console.log('[KB/QUERY]', cleaned); // Log query masuk
+  logger.info(`[KB/QUERY] ${cleaned}`); // Log query masuk
   if (cleaned.length < 3) {
     return next(createError(400, 'query minimal 3 karakter'));
   }
   try {
+    if (!(await isMeiliConnected())) {
+      return next(createError(503, 'Meilisearch unavailable'));
+    }
     const index = meiliClient.index('knowledgebase');
     const result = await index.search(cleaned, { limit: 10 });
-    console.log('[MEILI RESULT]', JSON.stringify(result.hits)); // Log hasil dari Meili
+    logger.debug(`[MEILI RESULT] ${JSON.stringify(result.hits)}`); // Log hasil dari Meili
     logger.debug(`kb/query hits: ${result.hits.length}`);
     sendSuccess(res, result.hits); // Relay hits langsung ke client
   } catch (err) {
-    console.log('[MEILI ERROR]', err); // Debug error jika query gagal
+    logger.error(`[MEILI ERROR] ${err.message}`); // Debug error jika query gagal
     logger.error(`kb query failed: ${err.message}`);
-    next(err);
+    next(createError(err.status || 500, err.message || 'Meilisearch query failed'));
   }
 });
 
