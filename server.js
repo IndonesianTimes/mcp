@@ -21,12 +21,17 @@ const { askAI } = require('./ai');
 const { spawn } = require('child_process');
 const { MeiliSearch } = require('meilisearch');
 const clientMetrics = require('prom-client');
+
+// Ensure we always use the Meili credentials from the environment
+const MEILI_API_KEY = process.env.MEILI_API_KEY || process.env.API_KEY || '';
 const meiliClient = new MeiliSearch({
   host: process.env.MEILI_HOST,
-  apiKey: process.env.API_KEY || process.env.MEILI_API_KEY,
+  apiKey: MEILI_API_KEY,
 });
+
+// Debug log so we can verify the server is using the expected Meili instance
 console.log('[ENV] MEILI_HOST:', process.env.MEILI_HOST);
-console.log('[ENV] MEILI_API_KEY:', process.env.API_KEY || process.env.MEILI_API_KEY);
+console.log('[ENV] MEILI_API_KEY:', MEILI_API_KEY);
 const metricsRegister = new clientMetrics.Registry();
 clientMetrics.collectDefaultMetrics({ register: metricsRegister });
 const httpCounter = new clientMetrics.Counter({
@@ -336,14 +341,17 @@ app.post('/ask', async (req, res, next) => {
 
 app.post('/kb/query', async (req, res, next) => {
   const { query } = req.body || {};
-  console.log('[KB/QUERY]', query); // Debug: tampilkan query yang diterima
-  if (typeof query !== 'string' || query.trim().length < 3) {
+  const cleaned = typeof query === 'string' ? query.trim() : '';
+  console.log('[KB/QUERY]', cleaned); // Log query masuk
+  if (cleaned.length < 3) {
     return next(createError(400, 'query minimal 3 karakter'));
   }
   try {
-    const result = await meiliClient.index('knowledgebase').search(query, { limit: 10 });
-    console.log('[MEILI RESULT]', JSON.stringify(result)); // Debug: tampilkan hasil Meili sebelum kirim ke client
-    sendSuccess(res, result.hits); // Kirim hanya array hits ke client
+    const index = meiliClient.index('knowledgebase');
+    const result = await index.search(cleaned, { limit: 10 });
+    console.log('[MEILI RESULT]', JSON.stringify(result.hits)); // Log hasil dari Meili
+    logger.debug(`kb/query hits: ${result.hits.length}`);
+    sendSuccess(res, result.hits); // Relay hits langsung ke client
   } catch (err) {
     console.log('[MEILI ERROR]', err); // Debug error jika query gagal
     logger.error(`kb query failed: ${err.message}`);
