@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const { MeiliSearch } = require('meilisearch');
 
 const MEILI_HOST = process.env.MEILI_HOST || 'http://localhost:7700';
-const MEILI_API_KEY = process.env.MEILI_API_KEY || 'masterKey';
+const MEILI_API_KEY = process.env.MEILI_API_KEY || 'magmeili';
 const KB_DIR = path.join(__dirname, '../kb');
 const INDEX_NAME = 'knowledgebase';
 

@@ -23,7 +23,7 @@ const { MeiliSearch } = require('meilisearch');
 const clientMetrics = require('prom-client');
 
 // Ensure we always use the Meili credentials from the environment
-const MEILI_API_KEY = process.env.MEILI_API_KEY || process.env.API_KEY || '';
+const MEILI_API_KEY = process.env.MEILI_API_KEY || process.env.API_KEY || 'magmeili';
 const meiliClient = new MeiliSearch({
   host: process.env.MEILI_HOST,
   apiKey: MEILI_API_KEY,
@@ -89,7 +89,7 @@ if (!process.env.JWT_SECRET) {
   throw new Error('JWT_SECRET must be defined in the .env file');
 }
 const JWT_SECRET = process.env.JWT_SECRET;
-const publicEndpoints = ['/search', '/tools/list', '/kb/search'];
+const publicEndpoints = ['/search', '/tools/list', '/kb/search', '/ask'];
 
 process.on('unhandledRejection', (reason) => {
   logger.error(`Unhandled Rejection: ${reason}`);
@@ -319,23 +319,52 @@ app.get('/tools/list', async (req, res) => {
 });
 
 app.post('/ask', async (req, res, next) => {
-  if (!req.body || typeof req.body.question !== 'string' || !req.body.question.trim()) {
-    return next(createError(400, 'Invalid request body'));
-  }
   try {
-    const result = await askAI(req.body.question);
-    sendSuccess(res, result);
+    const question = req.body?.question;
+    if (!question || typeof question !== 'string') {
+      return next(createError(400, 'Invalid request body'));
+    }
+
+    const result = await askAI(question);
+    res.json({ success: true, data: result, error: null });
   } catch (err) {
-    logger.error(`askAI failed: ${err.message}`);
     next(createError(500, 'AI processing failed'));
   }
 });
 
+// Helper: parse limit
+function parseLimitFromQuery(query, defaultLimit = 5, maxLimit = 50) {
+  let m = query.match(/(?:top|list|daftar|show)\s*(\d+)/i);
+  if (m && m[1]) return Math.max(1, Math.min(parseInt(m[1]), maxLimit));
+  m = query.match(/^(\d+)\s*(slot|game|permainan)/i);
+  if (m && m[1]) return Math.max(1, Math.min(parseInt(m[1]), maxLimit));
+  return defaultLimit;
+}
+
+// Helper: parse provider
+function parseProviderFromQuery(query) {
+  const providers = ['pragmatic', 'pgsoft', 'microgaming', 'joker', 'habanero'];
+  return providers.find(p => new RegExp(p, 'i').test(query));
+}
+
+// Helper: cleaning query
+function cleanQueryForMeili(query) {
+  return query
+    .replace(/\b(top|list|daftar|show)\s*\d+\b/gi, '')
+    .replace(/\b(slot|game|gacor|rtp|provider|pragmatic|pgsoft|microgaming|habanero|joker|malam|siang|pagi|hari|terbaik|tinggi|populer|paling)\b/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+// -------------------------
+// HANDLER /kb/query SECTION
+// -------------------------
+
 app.post('/kb/query', async (req, res, next) => {
   const { query } = req.body || {};
   const cleaned = typeof query === 'string' ? query.trim() : '';
-  console.log('[KB/QUERY]', cleaned);
-  logger.info(`[KB/QUERY] ${cleaned}`);
+  logger.info('[KB/QUERY]', cleaned);
+
   if (cleaned.length < 3) {
     return next(createError(400, 'query minimal 3 karakter'));
   }
@@ -343,17 +372,49 @@ app.post('/kb/query', async (req, res, next) => {
     if (!(await isMeiliConnected())) {
       return next(createError(503, 'Meilisearch unavailable'));
     }
+
+    const limit = parseLimitFromQuery(cleaned, 5, 50);
+    const provider = parseProviderFromQuery(cleaned);
+
+    let queryForSearch = cleaned;
+    if (provider) queryForSearch = queryForSearch.replace(new RegExp(provider, 'ig'), '');
+    const limitMatch = cleaned.match(/(?:top|list|daftar|show)\s*\d+/i) || cleaned.match(/^(\d+)\s*(slot|game|permainan)/i);
+    if (limitMatch) queryForSearch = queryForSearch.replace(limitMatch[0], '');
+    queryForSearch = cleanQueryForMeili(queryForSearch);
+    if (!queryForSearch && provider) queryForSearch = provider;
+    if (!queryForSearch) queryForSearch = 'slot';
+
+    const searchLimit = Math.max(100, limit * 4);
     const index = meiliClient.index('knowledgebase');
-    const result = await index.search(cleaned, { limit: 10 });
-    console.log('[MEILI RESULT]', result);
-    console.log('[MEILI HITS]', result.hits);
-    logger.debug(`[MEILI RESULT] ${JSON.stringify(result.hits)}`);
-    logger.debug(`kb/query hits: ${result.hits.length}`);
-    sendSuccess(res, result.hits);
+    const result = await index.search(queryForSearch, { limit: searchLimit });
+
+    let hits = Array.isArray(result.hits) ? result.hits : [];
+    logger.info(`[MeiliSearch] result: ${hits.length} hits. Keyword: "${queryForSearch}"`);
+
+    // *** STRICT PROVIDER FILTER (paling penting) ***
+    if (provider) {
+      const provNorm = provider.toLowerCase();
+      hits = hits.filter(x => (x.provider || '').toLowerCase().trim() === provNorm);
+      logger.info(`[After provider filter "${provNorm}"]: ${hits.length} hits`);
+      logger.info('Provider(s) after filter:', [...new Set(hits.map(x => x.provider))]);
+    }
+
+    // FILTER lain
+    if (/gacor/i.test(cleaned)) {
+      const before = hits.length;
+      hits = hits.filter(x => x.rtp && x.rtp >= 85);
+      logger.info(`[Filter RTP >= 85 ('gacor')]: ${before} -> ${hits.length} hits`);
+    }
+    if (/top/i.test(cleaned)) {
+      hits = hits.sort((a, b) => (b.rtp || 0) - (a.rtp || 0));
+    }
+    hits = hits.filter(x => x && x.id && x.provider && typeof x.rtp === 'number');
+
+    // LIMIT HARUS TERAKHIR
+    sendSuccess(res, hits.slice(0, limit));
   } catch (err) {
-    console.log('[MEILI ERROR]', err);
-    logger.error(`[MEILI ERROR] ${err.message}`);
-    logger.error(`kb query failed: ${err.message}`);
+    logger.error('[MEILI ERROR]', err);
+    logger.error('kb query failed:', err.message);
     next(createError(err.status || 500, err.message || 'Meilisearch query failed'));
   }
 });
@@ -433,7 +494,7 @@ if (require.main === module) {
       logger.warn('⚠️  Meili index "knowledgebase" not found. Run "npm run plug-kb" to create it.');
     }
 
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       logger.info(`MCP Server started on port ${PORT}`);
       const routes = listEndpoints(app);
       logger.info('Available endpoints:');

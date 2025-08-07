@@ -1,102 +1,140 @@
-// Utility module for interacting with LLM backends
-const { searchArticles } = require('./search');
+const axios = require('axios');
+const { execSync } = require('child_process');
 const logger = require('./logger');
+const { OpenAI } = require('openai');
 
-const BACKEND = process.env.LLM_BACKEND || 'local';
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const KB_QUERY_URL = `http://localhost:${process.env.PORT || 3000}/kb/query`;
+const SITE_URL = process.env.SITE_URL || "https://tautin.id/K891";
 
 /**
- * Ask the AI a question with optional context from the knowledge base.
- * @param {string} question
- * @returns {Promise<{answer: string, sources: {id: string|number, title: string}[]}>}
+ * Generate JWT token dinamis via genToken.js
+ */
+function generateToken() {
+  try {
+    const output = execSync('node genToken.js').toString().trim();
+    // Ambil token tanpa 'Bearer' prefix jika ada
+    return output.replace(/^Bearer\s+/i, '');
+  } catch (e) {
+    logger.error('[JWT] Failed to generate token:', e);
+    return '';
+  }
+}
+
+/**
+ * Ambil data dari KB Meilisearch via /kb/query
+ */
+async function fetchKBData(question) {
+  try {
+    const token = generateToken();
+    if (!token) throw new Error('No valid JWT token');
+    const res = await axios.post(
+      KB_QUERY_URL,
+      { query: question },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (res.data && res.data.success && Array.isArray(res.data.data)) {
+      logger.info(`[KB] Data fetched: ${res.data.data.length} items`);
+      return res.data.data;
+    }
+    logger.warn('[KB] Invalid response from /kb/query');
+    return [];
+  } catch (err) {
+    logger.error(`[KB] Fetch error: ${err.message}`);
+    return [];
+  }
+}
+
+/**
+ * Fungsi utama AI untuk endpoint /ask
  */
 async function askAI(question) {
-  if (typeof question !== 'string') {
-    throw new TypeError('question must be a string');
-  }
-
-  // simple sanitisation and trim
+  if (typeof question !== 'string') throw new TypeError('question must be string');
   const cleanedQuestion = question.replace(/[\u0000-\u001f\u007f]/g, '').trim();
-  if (!cleanedQuestion) {
-    throw new Error('question cannot be empty');
+  if (!cleanedQuestion) throw new Error('question cannot be empty');
+
+  // 1. Query data ke KB, filter Kangtau89
+  let articles = await fetchKBData(cleanedQuestion);
+  articles = articles.filter(a => {
+        const prov = (a.provider || '').toLowerCase();
+    const site = (a.site || '').toLowerCase();
+    return prov.includes('kangtau89') || site.includes('kangtau89');
+  });
+
+  // Fallback: jika tidak ada data Kangtau89, pakai semua hasil KB
+  if (articles.length === 0) {
+    logger.warn('No live RTP data found for Kangtau89, fallback ke semua data dari KB');
+    articles = await fetchKBData(cleanedQuestion);
   }
 
-  if (process.env.APP_MODE === 'demo') {
-    logger.info('LLM: demo mode active');
-    return {
-      answer: `Demo response for: ${cleanedQuestion}`,
-      sources: [],
-    };
-  }
+  // 2. Susun konteks prompt untuk GPT
+  const context = articles.map((a, i) =>
+    `${i + 1}. Nama: ${a.name || a.title}
+ RTP: ${a.rtp || 'N/A'}%
+ Jam Gacor: ${a.jam_gacor || 'N/A'}
+ Pola Main: ${(a.pola_main || []).join(', ') || 'N/A'}`
+  ).join('\n\n');
 
-  let articles = [];
+  // 3. System prompt & user prompt optimal (termasuk instruksi anchor link)
+  const systemPrompt = `
+Kamu adalah analis data slot profesional dari Primes AI, sebuah layanan AI RTP data analyst terpercaya.  
+Primes AI secara resmi bekerja sama dengan situs bermain Kangtau89 untuk menyediakan analisis dan rekomendasi data slot yang akurat dan berbobot.  
+Berikan jawaban yang informatif, objektif, dan menggunakan bahasa formal dan profesional.  
+Hindari menyebut AI, GPT, atau OpenAI dalam jawaban karena sekarang kamu adalah Primes AI.
+Selalu sebutkan angka RTP (%) setiap slot yang dibahas atau direkomendasikan, jika datanya tersedia pada context.  
+Saat memberikan tautan, tampilkan link dengan format anchor markdown seperti:  
+- web bermain [Kangtau89](${SITE_URL})  
+- informasi slot [Primes AI](https://primesai.co)  
+Jika dalam pertanyaan terdapat kata-kata seperti "link", "url", "site", "situs", "web", atau "website",  
+sertakan dengan halus URL resmi kami: [Kangtau89](${SITE_URL})  
+Sampaikan informasi dengan cara yang meyakinkan dan membantu, tanpa terkesan mempromosikan secara agresif.
+  `;
+
+  const userPrompt = `
+Data slot terbaru dari Kangtau89:
+${context}
+
+Pertanyaan user:
+${cleanedQuestion}
+
+Berdasarkan data di atas, berikan analisis dan rekomendasi yang jelas, rinci, dan sisipkan strategi untuk user.  
+Jika tersedia data angka RTP (%) di context, **selalu tuliskan angka RTP setiap slot yang dibahas** secara eksplisit (misal: "Sweet Bonanza — RTP: 97.2%").  
+Jika pertanyaan mengandung permintaan terkait "link", "url", "site", "situs", "web", atau "website",  
+sertakan juga URL resmi kami dengan format anchor markdown: [Kangtau89](${SITE_URL})  
+dan informasi slot [Primes AI](https://primesai.co) dalam jawaban secara alami dan sopan.
+  `;
+
+  // 4. Kirim ke OpenAI GPT
   try {
-    articles = await searchArticles(cleanedQuestion).then(a => a.slice(0, 3));
-  } catch (err) {
-    // swallow errors but log
-    logger.error(`searchArticles failed: ${err.message}`);
-  }
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: systemPrompt.trim() },
+        { role: 'user', content: userPrompt.trim() },
+      ],
+      temperature: 0.8,
+      max_tokens: 900,
+    });
 
-  const context = articles
-    .map(a => `Title: ${a.title}\nSnippet: ${a.snippet}`)
-    .join('\n\n');
-
-  const fullPrompt =
-    `Answer the question using the context below.\n\nContext:\n${context}\n\nQuestion: ${cleanedQuestion}\n\nAnswer:`;
-
-  let answerText = '';
-  if (BACKEND === 'openai') {
-    try {
-      const openaiModule = require('openai');
-      if (openaiModule.apiKey !== undefined) {
-        openaiModule.apiKey = process.env.OPENAI_API_KEY;
-      }
-      const client = openaiModule.OpenAI
-        ? new openaiModule.OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-        : openaiModule;
-      const createFn = client.ChatCompletion?.create || client.chat?.completions?.create;
-      if (typeof createFn !== 'function') {
-        if (!client.chat) {
-          logger.error('OpenAI client.chat missing; SDK structure may have changed');
-        }
-        if (process.env.APP_MODE === 'demo') {
-          return {
-            answer: `Demo response for: ${cleanedQuestion}`,
-            sources: [],
-          };
-        }
-        throw new Error('OpenAI SDK does not provide a chat completion function');
-      }
-      const response = await createFn.call(client, {
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: 'You are a helpful assistant.' },
-          { role: 'user', content: fullPrompt },
-        ],
-      });
-      if (!response || !response.choices || !response.choices[0]?.message?.content) {
-        throw new Error('Empty response from OpenAI');
-      }
-      answerText = response.choices[0].message.content;
-    } catch (err) {
-      logger.error(`OpenAI request failed: ${err.message}`);
-      throw new Error(`OpenAI request failed: ${err.message}`);
+    if (!response || !response.choices || !response.choices[0]?.message?.content) {
+      throw new Error('Empty response from OpenAI');
     }
-  } else if (BACKEND === 'local') {
-    try {
-      const local = require('./local_llm');
-      answerText = await local.generate(fullPrompt);
-    } catch (err) {
-      logger.error(`Local LLM error: ${err.message}`);
-      throw new Error(`Local LLM error: ${err.message}`);
-    }
-  } else {
-    throw new Error(`Unsupported LLM_BACKEND: ${BACKEND}`);
-  }
 
-  return {
-    answer: String(answerText || '').trim(),
-    sources: articles.map(a => ({ id: a.id, title: a.title })),
-  };
+    return {
+      answer: response.choices[0].message.content,
+      sources: articles.map(a => ({
+        id: a.id,
+        title: a.title || a.name,
+        rtp: a.rtp,
+        jam_gacor: a.jam_gacor,
+        pola_main: a.pola_main,
+      })),
+    };
+  } catch (error) {
+    logger.error(`[OpenAI] Request failed: ${error.message}`);
+    throw new Error(`OpenAI request failed: ${error.message}`);
+  }
 }
 
 module.exports = { askAI };
+

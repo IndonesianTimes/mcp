@@ -1,23 +1,43 @@
 #!/bin/bash
-set -e
 
-if [ ! -f .env ]; then
-  if [ -f .env.example ]; then
-    cp .env.example .env
-    echo "Created .env from .env.example"
-  else
-    echo "Warning: .env.example not found; skipping copy" >&2
-  fi
-fi
+# Update paket
+sudo apt update && sudo apt upgrade -y
 
-docker-compose up --build -d
+# Install Node.js (versi LTS terbaru)
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt install -y nodejs
 
-MCP_PORT=$(docker-compose port mcp 3000 2>/dev/null | cut -d ':' -f2)
-MEILI_PORT=$(docker-compose port meilisearch 7700 2>/dev/null | cut -d ':' -f2)
+# Cek versi Node.js & npm
+node -v
+npm -v
 
-MCP_PORT=${MCP_PORT:-3000}
-MEILI_PORT=${MEILI_PORT:-7700}
+# Install Docker (CE)
+sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-echo -e "\e[32mSetup complete!\e[0m"
-echo -e "\e[32mMCP running on http://localhost:${MCP_PORT}\e[0m"
-echo -e "\e[32mMeilisearch running on http://localhost:${MEILI_PORT}\e[0m"
+# Tambah repository Docker
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt update
+
+# Install docker engine dan docker-compose-plugin
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# Aktifkan docker service dan jalankan otomatis saat boot
+sudo systemctl enable docker
+sudo systemctl start docker
+
+# Tambahkan user kamu ke grup docker (agar bisa jalankan docker tanpa sudo)
+sudo usermod -aG docker $USER
+
+# Install git (kalau belum ada)
+sudo apt install -y git
+
+# Install pm2 untuk manage node process (opsional tapi direkomendasikan)
+sudo npm install -g pm2
+
+# Bersihkan cache
+sudo apt autoremove -y
+sudo apt clean
+
+echo "=== Instalasi selesai ==="
+echo "Restart terminal / logout-login agar docker bisa dijalankan tanpa sudo."
