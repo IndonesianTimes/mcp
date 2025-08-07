@@ -1,0 +1,334 @@
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T09:34:45.635Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-05T09:34:45.947Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-05T09:34:45.948Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T09:34:45.950Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-05T09:34:45.995Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-05T09:34:46.006Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-05T09:34:46.007Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-05T09:34:46.007Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-05T09:34:46.007Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-05T09:34:46.008Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-05T09:34:46.008Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-05T09:34:46.008Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-05T09:34:46.008Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-05T09:34:46.008Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-05T09:34:46.008Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-05T09:34:46.008Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-05T09:34:46.009Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T09:34:46.009Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T09:34:46.009Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-05T09:34:46.009Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-05T09:34:46.009Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-05T09:34:46.009Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T09:34:58.298Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T09:34:58.309Z"}
+{"level":"error","message":"Malformed Authorization header","timestamp":"2025-08-05T09:34:58.310Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:197:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at serveStatic (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:74:16)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)","timestamp":"2025-08-05T09:34:58.310Z"}
+{"level":"error","message":"Error fetching KB data: Request failed with status code 401","timestamp":"2025-08-05T09:34:58.317Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T09:41:26.007Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-05T09:41:26.158Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-05T09:41:26.158Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T09:41:26.161Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-05T09:41:26.193Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-05T09:41:26.201Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-05T09:41:26.202Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-05T09:41:26.202Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-05T09:41:26.203Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-05T09:41:26.203Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-05T09:41:26.203Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-05T09:41:26.203Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-05T09:41:26.203Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-05T09:41:26.203Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-05T09:41:26.203Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-05T09:41:26.203Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-05T09:41:26.203Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T09:41:26.203Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T09:41:26.203Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-05T09:41:26.204Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-05T09:41:26.204Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-05T09:41:26.204Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T09:41:38.044Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-05T09:41:38.187Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-05T09:41:38.188Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T09:41:38.190Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-05T09:41:38.224Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-05T09:41:38.231Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-05T09:41:38.232Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-05T09:41:38.234Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-05T09:41:38.235Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-05T09:41:38.235Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-05T09:41:38.236Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-05T09:41:38.236Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-05T09:41:38.236Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-05T09:41:38.236Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-05T09:41:38.236Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-05T09:41:38.236Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-05T09:41:38.237Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T09:41:38.237Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T09:41:38.237Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-05T09:41:38.237Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-05T09:41:38.237Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-05T09:41:38.238Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T09:41:44.389Z"}
+{"level":"info","message":"[DEBUG] fetchKBData - Requesting KB data for question: \"5 slot pgsoft gacor\"","timestamp":"2025-08-05T09:41:44.392Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T09:41:44.401Z"}
+{"level":"error","message":"Malformed Authorization header","timestamp":"2025-08-05T09:41:44.401Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:197:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at serveStatic (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:74:16)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)","timestamp":"2025-08-05T09:41:44.402Z"}
+{"level":"error","message":"[DEBUG] fetchKBData - Error fetching KB data: Request failed with status code 401","timestamp":"2025-08-05T09:41:44.405Z"}
+{"level":"info","message":"[DEBUG] askAI - SYSTEM PROMPT:","timestamp":"2025-08-05T09:41:44.406Z"}
+{"level":"info","message":"\nKamu adalah analis data slot profesional PrimesAI yang memberikan analisis berdasarkan data yang tersedia.\nGunakan bahasa formal, objektif, tanpa menyebut AI, GPT, atau OpenAI.\n","timestamp":"2025-08-05T09:41:44.406Z"}
+{"level":"info","message":"[DEBUG] askAI - USER PROMPT:","timestamp":"2025-08-05T09:41:44.406Z"}
+{"level":"info","message":"\nData slot terbaru:\n\n\nPertanyaan:\n5 slot pgsoft gacor\n\nBerikan analisis dan rekomendasi berdasarkan data di atas.\n","timestamp":"2025-08-05T09:41:44.406Z"}
+{"level":"info","message":"[DEBUG] askAI - GPT Response:","timestamp":"2025-08-05T09:41:53.605Z"}
+{"level":"info","message":"Berdasarkan data slot terbaru yang Anda berikan, berikut adalah analisis dan rekomendasi mengenai 5 slot PG Soft yang dianggap \"gacor\" atau memiliki performa yang baik:\n\n1. **Volatilitas dan RTP**: Slot yang dianggap gacor umumnya memiliki tingkat volatilitas dan Return to Player (RTP) yang seimbang. Volatilitas yang lebih rendah cenderung memberikan kemenangan lebih sering meskipun dalam jumlah kecil, sedangkan RTP yang lebih tinggi meningkatkan peluang pemain untuk mendapatkan kembali sebagian besar taruhan mereka dalam jangka panjang. Pastikan slot yang dipilih memiliki karakteristik ini.\n\n2. **Fitur Bonus dan Freespins**: Slot yang menawarkan berbagai fitur bonus, seperti freespins, pengganda, dan mini-games, cenderung lebih menarik dan dapat meningkatkan peluang kemenangan. Memilih slot dengan fitur-fitur ini dapat memberikan pengalaman bermain yang lebih menguntungkan.\n\n3. **Grafis dan Tema**: Slot dengan grafis yang menarik dan tema yang unik sering kali lebih memikat pemain, meningkatkan durasi bermain dan potensi kemenangan. Memilih slot dengan desain yang berkualitas dapat menjadi faktor penting dalam menentukan slot yang gacor.\n\n4. **Popularitas dan Ulasan Pengguna**: Slot yang memiliki ulasan positif dan banyak dimainkan oleh pengguna lain cenderung menjadi pilihan yang lebih aman. Melihat tren permainan dari komunitas dapat memberikan wawasan tambahan mengenai slot mana yang saat ini sedang diminati dan memberikan hasil yang baik.\n\n5. **Pengembang dan Reputasi**: PG Soft dikenal sebagai pengembang yang menghasilkan slot berkualitas tinggi. Memilih slot dari pengembang yang sudah memiliki reputasi baik memastikan permainan yang adil dan berlisensi.\n\nRekomendasi: Untuk meningkatkan pengalaman bermain dan peluang kemenangan, pertimbangkan untuk mencoba slot dengan kombinasi fitur-fitur di atas. Selalu periksa informasi terbaru mengenai RTP dan volatilitas dari slot yang Anda mainkan, serta tetap mengikuti perkembangan ulasan pengguna untuk menemukan slot yang paling sesuai dengan preferensi dan strategi bermain Anda.","timestamp":"2025-08-05T09:41:53.605Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T09:46:58.474Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-05T09:46:58.630Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-05T09:46:58.631Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T09:46:58.633Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-05T09:46:58.665Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-05T09:46:58.673Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-05T09:46:58.674Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-05T09:46:58.675Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-05T09:46:58.675Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-05T09:46:58.675Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-05T09:46:58.675Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-05T09:46:58.676Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-05T09:46:58.676Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-05T09:46:58.676Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-05T09:46:58.676Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-05T09:46:58.676Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-05T09:46:58.676Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T09:46:58.676Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T09:46:58.676Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-05T09:46:58.676Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-05T09:46:58.676Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-05T09:46:58.676Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T09:47:02.446Z"}
+{"level":"error","message":"Malformed Authorization header","timestamp":"2025-08-05T09:47:02.447Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:197:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at serveStatic (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:74:16)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)","timestamp":"2025-08-05T09:47:02.448Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T09:48:41.307Z"}
+{"level":"info","message":"[KB/QUERY]","timestamp":"2025-08-05T09:48:41.309Z"}
+{"level":"info","message":"[MeiliSearch] result: 0 hits. Keyword: \"slot\"","timestamp":"2025-08-05T09:48:41.328Z"}
+{"level":"info","message":"GET /healts","timestamp":"2025-08-05T09:51:05.738Z"}
+{"level":"error","message":"Missing Authorization header","timestamp":"2025-08-05T09:51:05.739Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:192:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at SendStream.error (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:120:7)\n    at SendStream.emit (node:events:518:28)\n    at SendStream.error (C:\\Users\\Admin\\mcp\\node_modules\\send\\index.js:168:17)","timestamp":"2025-08-05T09:51:05.740Z"}
+{"level":"info","message":"GET /healtz","timestamp":"2025-08-05T09:51:08.255Z"}
+{"level":"error","message":"Missing Authorization header","timestamp":"2025-08-05T09:51:08.256Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:192:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at SendStream.error (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:120:7)\n    at SendStream.emit (node:events:518:28)\n    at SendStream.error (C:\\Users\\Admin\\mcp\\node_modules\\send\\index.js:168:17)","timestamp":"2025-08-05T09:51:08.257Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T09:52:01.023Z"}
+{"level":"info","message":"[KB/QUERY]","timestamp":"2025-08-05T09:52:01.025Z"}
+{"level":"error","message":"Error: query minimal 3 karakter\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at C:\\Users\\Admin\\mcp\\server.js:369:17\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\route.js:157:13)\n    at Route.dispatch (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\route.js:117:3)\n    at handle (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:435:11)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:295:15\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)","timestamp":"2025-08-05T09:52:01.025Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T09:52:12.801Z"}
+{"level":"info","message":"[KB/QUERY]","timestamp":"2025-08-05T09:52:12.802Z"}
+{"level":"info","message":"[MeiliSearch] result: 80 hits. Keyword: \"pragmatic\"","timestamp":"2025-08-05T09:52:12.817Z"}
+{"level":"info","message":"[After provider filter \"pragmatic\"]: 80 hits","timestamp":"2025-08-05T09:52:12.817Z"}
+{"0":"pragmatic","level":"info","message":"Provider(s) after filter:","timestamp":"2025-08-05T09:52:12.817Z"}
+{"level":"info","message":"[Filter RTP >= 85 ('gacor')]: 80 -> 7 hits","timestamp":"2025-08-05T09:52:12.818Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T09:52:55.959Z"}
+{"level":"error","message":"Malformed Authorization header","timestamp":"2025-08-05T09:52:55.960Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:197:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at serveStatic (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:74:16)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)","timestamp":"2025-08-05T09:52:55.961Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T10:10:06.751Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-05T10:10:06.897Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-05T10:10:06.897Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T10:10:06.899Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-05T10:10:06.932Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-05T10:10:06.938Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-05T10:10:06.938Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-05T10:10:06.938Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-05T10:10:06.939Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-05T10:10:06.939Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-05T10:10:06.939Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-05T10:10:06.939Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-05T10:10:06.939Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-05T10:10:06.939Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-05T10:10:06.939Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-05T10:10:06.940Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-05T10:10:06.940Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T10:10:06.940Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T10:10:06.940Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-05T10:10:06.940Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-05T10:10:06.940Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-05T10:10:06.940Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T10:10:13.684Z"}
+{"level":"info","message":"[JWT] Token generated successfully","timestamp":"2025-08-05T10:10:13.825Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T10:10:13.832Z"}
+{"level":"error","message":"Malformed Authorization header","timestamp":"2025-08-05T10:10:13.832Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:197:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at serveStatic (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:74:16)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)","timestamp":"2025-08-05T10:10:13.833Z"}
+{"level":"error","message":"[KB] Fetch error: Request failed with status code 401","timestamp":"2025-08-05T10:10:13.837Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T10:25:18.805Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-05T10:25:18.960Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-05T10:25:18.960Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T10:25:18.963Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-05T10:25:18.997Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-05T10:25:19.007Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-05T10:25:19.008Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-05T10:25:19.009Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-05T10:25:19.009Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-05T10:25:19.009Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-05T10:25:19.009Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-05T10:25:19.010Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-05T10:25:19.010Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-05T10:25:19.010Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-05T10:25:19.010Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-05T10:25:19.010Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-05T10:25:19.010Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T10:25:19.010Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T10:25:19.011Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-05T10:25:19.011Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-05T10:25:19.011Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-05T10:25:19.011Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T10:25:26.940Z"}
+{"level":"info","message":"[JWT] Token generated successfully","timestamp":"2025-08-05T10:25:27.101Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T10:25:27.110Z"}
+{"level":"error","message":"Malformed Authorization header","timestamp":"2025-08-05T10:25:27.111Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:197:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at serveStatic (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:74:16)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)","timestamp":"2025-08-05T10:25:27.112Z"}
+{"level":"error","message":"[KB] Fetch error: Request failed with status code 401","timestamp":"2025-08-05T10:25:27.117Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T10:29:39.272Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-05T10:29:39.420Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-05T10:29:39.420Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T10:29:39.423Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-05T10:29:39.455Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-05T10:29:39.462Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-05T10:29:39.463Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-05T10:29:39.464Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-05T10:29:39.464Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-05T10:29:39.465Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-05T10:29:39.465Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-05T10:29:39.465Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-05T10:29:39.466Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-05T10:29:39.466Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-05T10:29:39.466Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-05T10:29:39.466Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-05T10:29:39.466Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T10:29:39.466Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T10:29:39.466Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-05T10:29:39.467Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-05T10:29:39.467Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-05T10:29:39.467Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T10:29:49.422Z"}
+{"level":"info","message":"[JWT] Token generated successfully","timestamp":"2025-08-05T10:29:49.571Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T10:29:49.578Z"}
+{"level":"error","message":"Malformed Authorization header","timestamp":"2025-08-05T10:29:49.578Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:197:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at serveStatic (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:74:16)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)","timestamp":"2025-08-05T10:29:49.579Z"}
+{"level":"error","message":"[KB] Fetch error: Request failed with status code 401","timestamp":"2025-08-05T10:29:49.583Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T10:40:36.555Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-05T10:40:36.735Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-05T10:40:36.736Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T10:40:36.738Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-05T10:40:36.770Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-05T10:40:36.776Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-05T10:40:36.777Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-05T10:40:36.777Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-05T10:40:36.778Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-05T10:40:36.778Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-05T10:40:36.778Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-05T10:40:36.778Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-05T10:40:36.778Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-05T10:40:36.779Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-05T10:40:36.779Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-05T10:40:36.779Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-05T10:40:36.779Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T10:40:36.779Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T10:40:36.779Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-05T10:40:36.779Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-05T10:40:36.779Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-05T10:40:36.779Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T10:40:49.028Z"}
+{"level":"info","message":"[JWT] Token generated successfully","timestamp":"2025-08-05T10:40:49.179Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T10:40:49.188Z"}
+{"level":"error","message":"Malformed Authorization header","timestamp":"2025-08-05T10:40:49.188Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:197:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at serveStatic (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:74:16)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)","timestamp":"2025-08-05T10:40:49.189Z"}
+{"level":"error","message":"[KB] Fetch error: Request failed with status code 401","timestamp":"2025-08-05T10:40:49.192Z"}
+{"level":"warn","message":"No live RTP data found for Kangtau89, fallback ke data asli","timestamp":"2025-08-05T10:40:49.192Z"}
+{"level":"info","message":"[JWT] Token generated successfully","timestamp":"2025-08-05T10:40:49.333Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T10:40:49.335Z"}
+{"level":"error","message":"Malformed Authorization header","timestamp":"2025-08-05T10:40:49.335Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:197:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at serveStatic (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:74:16)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)","timestamp":"2025-08-05T10:40:49.336Z"}
+{"level":"error","message":"[KB] Fetch error: Request failed with status code 401","timestamp":"2025-08-05T10:40:49.337Z"}
+{"level":"info","message":"GET /","timestamp":"2025-08-05T10:51:45.619Z"}
+{"level":"info","message":"GET /favicon.ico","timestamp":"2025-08-05T10:51:46.004Z"}
+{"level":"error","message":"Missing Authorization header","timestamp":"2025-08-05T10:51:46.006Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:192:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at SendStream.error (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:120:7)\n    at SendStream.emit (node:events:518:28)\n    at SendStream.error (C:\\Users\\Admin\\mcp\\node_modules\\send\\index.js:168:17)","timestamp":"2025-08-05T10:51:46.006Z"}
+{"level":"info","message":"GET /","timestamp":"2025-08-05T10:54:25.022Z"}
+{"level":"info","message":"GET /favicon.ico","timestamp":"2025-08-05T10:54:25.463Z"}
+{"level":"error","message":"Missing Authorization header","timestamp":"2025-08-05T10:54:25.464Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:192:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at SendStream.error (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:120:7)\n    at SendStream.emit (node:events:518:28)\n    at SendStream.error (C:\\Users\\Admin\\mcp\\node_modules\\send\\index.js:168:17)","timestamp":"2025-08-05T10:54:25.465Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T11:00:54.178Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-05T11:00:54.335Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-05T11:00:54.336Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T11:00:54.339Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-05T11:00:54.376Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-05T11:00:54.384Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-05T11:00:54.385Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-05T11:00:54.385Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-05T11:00:54.386Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-05T11:00:54.386Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-05T11:00:54.386Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-05T11:00:54.386Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-05T11:00:54.386Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-05T11:00:54.387Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-05T11:00:54.387Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-05T11:00:54.387Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-05T11:00:54.387Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T11:00:54.387Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T11:00:54.387Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-05T11:00:54.387Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-05T11:00:54.387Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-05T11:00:54.388Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T11:04:19.904Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-05T11:04:20.068Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-05T11:04:20.068Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T11:04:20.071Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-05T11:04:20.103Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-05T11:04:20.110Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-05T11:04:20.111Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-05T11:04:20.111Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-05T11:04:20.111Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-05T11:04:20.112Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-05T11:04:20.112Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-05T11:04:20.112Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-05T11:04:20.112Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-05T11:04:20.112Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-05T11:04:20.112Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-05T11:04:20.112Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-05T11:04:20.112Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T11:04:20.113Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T11:04:20.113Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-05T11:04:20.113Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-05T11:04:20.113Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-05T11:04:20.113Z"}
+{"level":"info","message":"GET /","timestamp":"2025-08-05T11:06:21.783Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T11:06:59.477Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-05T11:06:59.645Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-05T11:06:59.646Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-05T11:06:59.649Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-05T11:06:59.686Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-05T11:06:59.694Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-05T11:06:59.695Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-05T11:06:59.696Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-05T11:06:59.696Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-05T11:06:59.696Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-05T11:06:59.697Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-05T11:06:59.697Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-05T11:06:59.697Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-05T11:06:59.697Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-05T11:06:59.697Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-05T11:06:59.697Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-05T11:06:59.698Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T11:06:59.698Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T11:06:59.698Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-05T11:06:59.698Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-05T11:06:59.698Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-05T11:06:59.698Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-05T11:16:14.447Z"}
+{"level":"info","message":"[JWT] Token generated successfully","timestamp":"2025-08-05T11:16:14.590Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T11:16:14.598Z"}
+{"level":"error","message":"Malformed Authorization header","timestamp":"2025-08-05T11:16:14.599Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:197:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at serveStatic (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:74:16)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)","timestamp":"2025-08-05T11:16:14.599Z"}
+{"level":"error","message":"[KB] Fetch error: Request failed with status code 401","timestamp":"2025-08-05T11:16:14.603Z"}
+{"level":"warn","message":"No live RTP data found for Kangtau89, fallback ke data asli","timestamp":"2025-08-05T11:16:14.603Z"}
+{"level":"info","message":"[JWT] Token generated successfully","timestamp":"2025-08-05T11:16:14.749Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-05T11:16:14.752Z"}
+{"level":"error","message":"Malformed Authorization header","timestamp":"2025-08-05T11:16:14.752Z"}
+{"level":"error","message":"Error: Unauthorized\n    at createError (C:\\Users\\Admin\\mcp\\server.js:83:15)\n    at authenticateToken (C:\\Users\\Admin\\mcp\\server.js:197:17)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:291:5)\n    at serveStatic (C:\\Users\\Admin\\mcp\\node_modules\\serve-static\\index.js:74:16)\n    at Layer.handleRequest (C:\\Users\\Admin\\mcp\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\Admin\\mcp\\node_modules\\router\\index.js:342:13)","timestamp":"2025-08-05T11:16:14.753Z"}
+{"level":"error","message":"[KB] Fetch error: Request failed with status code 401","timestamp":"2025-08-05T11:16:14.754Z"}

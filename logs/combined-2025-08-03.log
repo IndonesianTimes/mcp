@@ -1,0 +1,139 @@
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T09:02:20.582Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-03T09:02:20.660Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-03T09:02:20.661Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T09:02:20.663Z"}
+{"level":"warn","message":"⚠️  JWT_SECRET is empty or using default value","timestamp":"2025-08-03T09:02:20.663Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-03T09:02:20.699Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-03T09:02:20.706Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-03T09:02:20.706Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-03T09:02:20.706Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-03T09:02:20.707Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-03T09:02:20.707Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-03T09:02:20.707Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-03T09:02:20.707Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-03T09:02:20.707Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-03T09:02:20.707Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-03T09:02:20.707Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-03T09:02:20.707Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-03T09:02:20.708Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-03T09:02:20.708Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-03T09:02:20.708Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-03T09:02:20.708Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-03T09:02:20.708Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-03T09:02:20.708Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T09:17:01.821Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-03T09:17:01.899Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-03T09:17:01.899Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T09:17:01.901Z"}
+{"level":"warn","message":"⚠️  JWT_SECRET is empty or using default value","timestamp":"2025-08-03T09:17:01.902Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-03T09:17:01.934Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-03T09:17:01.940Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-03T09:17:01.940Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-03T09:17:01.941Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-03T09:17:01.941Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-03T09:17:01.941Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-03T09:17:01.941Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-03T09:17:01.941Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-03T09:17:01.942Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-03T09:17:01.942Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-03T09:17:01.942Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-03T09:17:01.942Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-03T09:17:01.942Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-03T09:17:01.942Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-03T09:17:01.942Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-03T09:17:01.942Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-03T09:17:01.942Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-03T09:17:01.942Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T09:22:00.660Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-03T09:22:00.745Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-03T09:22:00.745Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T09:22:00.749Z"}
+{"level":"warn","message":"⚠️  JWT_SECRET is empty or using default value","timestamp":"2025-08-03T09:22:00.749Z"}
+{"level":"warn","message":"Starting without Meilisearch: Request to http://localhost:7700/health has failed","timestamp":"2025-08-03T09:22:00.775Z"}
+{"level":"warn","message":"⚠️  Meili index \"knowledgebase\" not found. Run \"npm run plug-kb\" to create it.","timestamp":"2025-08-03T09:22:00.780Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-03T09:22:00.782Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-03T09:22:00.783Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-03T09:22:00.783Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-03T09:22:00.784Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-03T09:22:00.784Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-03T09:22:00.784Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-03T09:22:00.784Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-03T09:22:00.784Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-03T09:22:00.784Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-03T09:22:00.784Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-03T09:22:00.784Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-03T09:22:00.784Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-03T09:22:00.785Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-03T09:22:00.785Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-03T09:22:00.785Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-03T09:22:00.785Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-03T09:22:00.785Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T09:30:59.859Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-03T09:30:59.935Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-03T09:30:59.935Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T09:30:59.938Z"}
+{"level":"warn","message":"⚠️  JWT_SECRET is empty or using default value","timestamp":"2025-08-03T09:30:59.938Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-03T09:30:59.972Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-03T09:30:59.978Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-03T09:30:59.978Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-03T09:30:59.979Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-03T09:30:59.979Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-03T09:30:59.979Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-03T09:30:59.979Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-03T09:30:59.979Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-03T09:30:59.979Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-03T09:30:59.979Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-03T09:30:59.979Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-03T09:30:59.979Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-03T09:30:59.979Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-03T09:30:59.980Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-03T09:30:59.980Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-03T09:30:59.980Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-03T09:30:59.980Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-03T09:30:59.980Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T12:22:35.381Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-03T12:22:35.545Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-03T12:22:35.546Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T12:22:35.550Z"}
+{"level":"warn","message":"⚠️  JWT_SECRET is empty or using default value","timestamp":"2025-08-03T12:22:35.550Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-03T12:22:35.605Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-03T12:22:35.613Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-03T12:22:35.613Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-03T12:22:35.613Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-03T12:22:35.614Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T12:55:30.918Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-03T12:55:31.022Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-03T12:55:31.022Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-03T12:55:31.026Z"}
+{"level":"warn","message":"⚠️  JWT_SECRET is empty or using default value","timestamp":"2025-08-03T12:55:31.027Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-03T12:55:31.068Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-03T12:55:31.077Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-03T12:55:31.078Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-03T12:55:31.078Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-03T12:55:31.078Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-03T12:55:31.078Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-03T12:55:31.079Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-03T12:55:31.079Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-03T12:55:31.079Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-03T12:55:31.079Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-03T12:55:31.079Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-03T12:55:31.079Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-03T12:55:31.079Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-03T12:55:31.079Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-03T12:55:31.079Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-03T12:55:31.079Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-03T12:55:31.079Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-03T12:55:31.079Z"}

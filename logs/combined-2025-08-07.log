@@ -1,0 +1,41 @@
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-07T09:01:08.601Z"}
+{"level":"info","message":"[KB/QUERY]","timestamp":"2025-08-07T09:01:08.618Z"}
+{"level":"info","message":"[MeiliSearch] result: 30 hits. Keyword: \"pgsoft\"","timestamp":"2025-08-07T09:01:08.693Z"}
+{"level":"info","message":"[After provider filter \"pgsoft\"]: 30 hits","timestamp":"2025-08-07T09:01:08.694Z"}
+{"0":"pgsoft","level":"info","message":"Provider(s) after filter:","timestamp":"2025-08-07T09:01:08.694Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-07T09:06:11.247Z"}
+{"level":"info","message":"[ENV] MEILI_HOST: http://localhost:7700","timestamp":"2025-08-07T09:06:11.623Z"}
+{"level":"info","message":"[ENV] MEILI_API_KEY is set","timestamp":"2025-08-07T09:06:11.624Z"}
+{"level":"warn","message":"⚠️  API_KEY is not set; falling back to MEILI_API_KEY","timestamp":"2025-08-07T09:06:11.627Z"}
+{"level":"info","message":"Connected to Meilisearch","timestamp":"2025-08-07T09:06:11.676Z"}
+{"level":"info","message":"MCP Server started on port 3000","timestamp":"2025-08-07T09:06:11.691Z"}
+{"level":"info","message":"Available endpoints:","timestamp":"2025-08-07T09:06:11.691Z"}
+{"level":"info","message":"GET /healthz","timestamp":"2025-08-07T09:06:11.692Z"}
+{"level":"info","message":"GET /status","timestamp":"2025-08-07T09:06:11.692Z"}
+{"level":"info","message":"POST /data","timestamp":"2025-08-07T09:06:11.693Z"}
+{"level":"info","message":"POST /articles","timestamp":"2025-08-07T09:06:11.693Z"}
+{"level":"info","message":"GET /search","timestamp":"2025-08-07T09:06:11.693Z"}
+{"level":"info","message":"GET /kb/search","timestamp":"2025-08-07T09:06:11.693Z"}
+{"level":"info","message":"POST /tools/call","timestamp":"2025-08-07T09:06:11.694Z"}
+{"level":"info","message":"POST /admin/reload-tools","timestamp":"2025-08-07T09:06:11.694Z"}
+{"level":"info","message":"POST /admin/generate-token","timestamp":"2025-08-07T09:06:11.694Z"}
+{"level":"info","message":"GET /tools/list","timestamp":"2025-08-07T09:06:11.694Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-07T09:06:11.694Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-07T09:06:11.694Z"}
+{"level":"info","message":"POST /tools/plug-kb","timestamp":"2025-08-07T09:06:11.695Z"}
+{"level":"info","message":"GET /routes","timestamp":"2025-08-07T09:06:11.695Z"}
+{"level":"info","message":"GET /metrics","timestamp":"2025-08-07T09:06:11.695Z"}
+{"level":"info","message":"POST /ask","timestamp":"2025-08-07T09:12:05.257Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-07T09:12:05.407Z"}
+{"level":"info","message":"[KB/QUERY]","timestamp":"2025-08-07T09:12:05.410Z"}
+{"level":"info","message":"[MeiliSearch] result: 30 hits. Keyword: \"pgsoft\"","timestamp":"2025-08-07T09:12:05.431Z"}
+{"level":"info","message":"[After provider filter \"pgsoft\"]: 30 hits","timestamp":"2025-08-07T09:12:05.431Z"}
+{"0":"pgsoft","level":"info","message":"Provider(s) after filter:","timestamp":"2025-08-07T09:12:05.431Z"}
+{"level":"info","message":"[KB] Data fetched: 2 items","timestamp":"2025-08-07T09:12:05.435Z"}
+{"level":"warn","message":"No live RTP data found for Kangtau89, fallback ke semua data dari KB","timestamp":"2025-08-07T09:12:05.435Z"}
+{"level":"info","message":"POST /kb/query","timestamp":"2025-08-07T09:12:05.581Z"}
+{"level":"info","message":"[KB/QUERY]","timestamp":"2025-08-07T09:12:05.583Z"}
+{"level":"info","message":"[MeiliSearch] result: 30 hits. Keyword: \"pgsoft\"","timestamp":"2025-08-07T09:12:05.592Z"}
+{"level":"info","message":"[After provider filter \"pgsoft\"]: 30 hits","timestamp":"2025-08-07T09:12:05.592Z"}
+{"0":"pgsoft","level":"info","message":"Provider(s) after filter:","timestamp":"2025-08-07T09:12:05.592Z"}
+{"level":"info","message":"[KB] Data fetched: 2 items","timestamp":"2025-08-07T09:12:05.593Z"}
