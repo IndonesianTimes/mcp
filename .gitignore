@@ -1,2 +1,17 @@
-node_modules/
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+
+# Logs & runtime
 logs/
+*.log
+
+# Node
+node_modules/
+dist/
+build/
+
+# Project
+kb/

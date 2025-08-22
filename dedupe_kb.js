@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const inputPath = './knowledgebase_meili.json';  // file sumber
-const outputFolder = './kb'; // folder output batch
+const inputPath = '/var/www/html/knowledgebase_meili.json';  // file sumber
+const outputFolder = '/root/mcp/kb/'; // folder output batch
 const batchSize = 20; // batch size
 
 // Fungsi sanitize ID sesuai aturan Meilisearch
@@ -16,7 +16,7 @@ function sanitizeId(id) {
 
 // 1. Pastikan folder output ada
 if (!fs.existsSync(outputFolder)) {
-  fs.mkdirSync(outputFolder);
+  fs.mkdirSync(outputFolder, { recursive: true });
 }
 
 // 2. Baca data & deduplicate berdasarkan "id"
@@ -45,40 +45,72 @@ function flatten(arr) {
   return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatten(val) : val), []);
 }
 
-// Logic "gacor" hanya RTP >= 85 dan tidak ada pola "jangan main"
-function isGacor(obj) {
+// Sinonim provider spesifik (hanya inject sesuai provider data ini)
+const providerSynonyms = {
+  'pgsoft': ['pgsoft', 'pg soft', 'pocket games soft', 'pgs'],
+  'pragmatic': ['pragmatic', 'pragmatic play', 'pp', 'pragmaticplay'],
+  'habanero': ['habanero', 'habanero slot', 'hb'],
+  'microgaming': ['microgaming', 'micro gaming', 'mg'],
+  'joker': ['joker', 'joker slot', 'joker123']
+};
+
+
+function getProviderSynonyms(provider) {
+  const key = (provider || '').toLowerCase();
+  return providerSynonyms[key] || (provider ? [provider] : []);
+}
+
+// Sinonim global
+const globalSynonyms = [
+  'slot', 'game', 'permainan', 'gacor', 'auto gacor', 'mudah menang',
+  'jackpot', 'jp', 'bonus', 'bigwin', 'win',
+  'manual', 'turbo', 'auto', 'quick', 'cepat', 'lambat',
+  'malam', 'siang', 'pagi', 'sore',
+  'bocoran', 'info', 'prediksi',
+  'rtp', 'return to player', 'persentase menang', 'hari ini', 'sekarang', 'bagus'
+];
+
+// UPGRADED: Generator fulltext super kaya & clean
+function createFulltext(obj) {
+  function collectWords(val) {
+    if (!val) return [];
+    if (Array.isArray(val)) return val.map(String);
+    if (typeof val === "object") return [];
+    return [String(val)];
+  }
+
+  let parts = [
+    obj.name,
+    obj.id,
+    obj.provider,
+    ...(getProviderSynonyms(obj.provider)),
+    obj.status,
+    obj.site,
+    obj.jam_gacor,
+    obj.rtp ? String(obj.rtp) : '',
+    obj.last_update ? String(obj.last_update).slice(0, 10) : '', // tanggal only
+    ...(collectWords(obj.category)),
+    ...(collectWords(obj.tags)),
+    ...(collectWords(obj.pola_main)),
+    (typeof obj.description === "string" ? obj.description : ''),
+    (Array.isArray(obj.faq) ? obj.faq.map(f => `${f.q} ${f.a}`).join(' ') : ''),
+    globalSynonyms.join(' '),
+    'resmi original terpercaya',
+    'kangtau89', // context brand
+    'link daftar bocoran info promo'
+  ];
+
+  // Tambah tag 'gacor' jika layak
   const rtpOK = obj.rtp && obj.rtp >= 85;
   const badPattern = Array.isArray(obj.pola_main)
     ? obj.pola_main.join(' ').toLowerCase().includes('jangan main')
     : false;
-  return rtpOK && !badPattern;
-}
-
-// Function createFulltext (REKOMENDASI FINAL)
-function createFulltext(obj) {
-  let parts = [
-    obj.name || '',
-    obj.provider || '',
-    obj.id || '',
-    obj.status || '',
-    obj.rtp ? String(obj.rtp) : '',
-    obj.jam_gacor || '',
-    obj.last_update || '',
-    flatten(obj.tags).join(' '),
-    flatten(obj.category).join(' '),
-    flatten(obj.pola_main).join(' '),
-    (typeof obj.description === 'string' ? obj.description : ''),
-    (Array.isArray(obj.faq) ? obj.faq.map(f => f.q + ' ' + f.a).join(' ') : ''),
-    'slot malam siang pagi sore scatter rtp jp jackpot pola game auto manual turbo mudah menang gampang bonus bocoran link resmi terbaru'
-  ];
-
-  // Tambah 'gacor' HANYA jika layak
-  if (isGacor(obj)) {
+  if (rtpOK && !badPattern) {
     parts.push('gacor');
   }
 
-  // Hilangkan kata duplikat, lower-case semua, buang kosong
-  let clean = parts.join(' ').replace(/\s+/g, ' ').toLowerCase();
+  // Unique, lowercase, no blank
+  let clean = parts.join(' ').replace(/[\s\n]+/g, ' ').toLowerCase();
   let unique = Array.from(new Set(clean.split(' ').filter(Boolean))).join(' ');
   return unique.trim();
 }

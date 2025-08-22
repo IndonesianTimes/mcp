@@ -5,6 +5,7 @@ if (dotenvResult.error) {
   logger.warn('⚠️  .env file not found, falling back to environment variables');
 }
 const express = require('express');
+const cors = require('cors'); // ✅ Tambahan CORS
 const rateLimit = require('express-rate-limit');
 const {
   indexArticle,
@@ -30,13 +31,13 @@ const meiliClient = new MeiliSearch({
 });
 
 // Debug log so we can verify the server is using the expected Meili instance
-// Avoid printing the full API key to prevent leaking credentials
 logger.info(`[ENV] MEILI_HOST: ${process.env.MEILI_HOST}`);
 if (MEILI_API_KEY) {
   logger.info('[ENV] MEILI_API_KEY is set');
 } else {
   logger.warn('[ENV] MEILI_API_KEY is missing or empty');
 }
+
 const metricsRegister = new clientMetrics.Registry();
 clientMetrics.collectDefaultMetrics({ register: metricsRegister });
 const httpCounter = new clientMetrics.Counter({
@@ -121,7 +122,19 @@ function listEndpoints(app) {
 }
 
 const app = express();
-// Ensure body parser is active before all routes
+app.set('trust proxy', 1);
+// ✅ Middleware CORS global — taruh sebelum route
+app.use(cors({
+  origin: [
+    'https://primesai.co',
+    'http://localhost:3000'
+  ],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
+// Body parser
 app.use(express.json());
 
 const limiter = rateLimit({
@@ -130,10 +143,9 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
-
 app.use(limiter);
 
-// Log each incoming request after body parsing
+// Logging
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.originalUrl}`);
   res.on('finish', () => {
@@ -143,7 +155,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve static files from the public directory
 app.use(express.static('public'));
 
 app.get('/healthz', async (req, res) => {

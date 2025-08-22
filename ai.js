@@ -55,17 +55,7 @@ async function askAI(question) {
 
   // 1. Query data ke KB, filter Kangtau89
   let articles = await fetchKBData(cleanedQuestion);
-  articles = articles.filter(a => {
-        const prov = (a.provider || '').toLowerCase();
-    const site = (a.site || '').toLowerCase();
-    return prov.includes('kangtau89') || site.includes('kangtau89');
-  });
 
-  // Fallback: jika tidak ada data Kangtau89, pakai semua hasil KB
-  if (articles.length === 0) {
-    logger.warn('No live RTP data found for Kangtau89, fallback ke semua data dari KB');
-    articles = await fetchKBData(cleanedQuestion);
-  }
 
   // 2. Susun konteks prompt untuk GPT
   const context = articles.map((a, i) =>
